@@ -1,0 +1,22 @@
+{
+  "name": "@smat/interface-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Fail-closed UI/UX evidence gates and MCP adapter for SMAT apps",
+  "engines": { "node": ">=22.13.0" },
+  "bin": { "smat-uiux": "./src/cli.mjs" },
+  "scripts": {
+    "mcp": "node src/server.mjs",
+    "check": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs",
+    "test": "node --test test/*.test.mjs",
+    "audit:tokens": "node src/cli.mjs tokens design-system/tokens.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "@axe-core/playwright": "^4.10.0",
+    "playwright": "^1.56.0",
+    "zod": "^4.0.0"
+  },
+  "license": "UNLICENSED"
+}

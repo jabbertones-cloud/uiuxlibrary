@@ -1,0 +1,5 @@
+{
+  "primitive": { "color": { "ink": { "$type": "color", "$value": "#123456" } } },
+  "semantic": { "surface": { "canvas": { "$type": "color", "$value": "#f4f4f4" } } },
+  "component": { "button": { "background": { "$type": "color", "$value": "{primitive.color.ink}" } } }
+}
