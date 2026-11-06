@@ -1,0 +1,8 @@
+{
+  "name": "smat-interface-lab-mcp",
+  "main": "./worker.mjs",
+  "compatibility_date": "2026-11-05",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "vars": { "GIT_SHA": "ea9ba4286797d8e3001613a85ef68f125c486dd5" }
+}
