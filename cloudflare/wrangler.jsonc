@@ -4,5 +4,5 @@
   "compatibility_date": "2026-11-05",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
-  "vars": { "GIT_SHA": "ea9ba4286797d8e3001613a85ef68f125c486dd5" }
+  "vars": { "GIT_SHA": "b79446db804db494d8088a2f684e894f0cea8823" }
 }
