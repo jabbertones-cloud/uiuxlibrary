@@ -1,0 +1,33 @@
+{
+  "name": "@smat/interface-lab",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Fail-closed design system and UI/UX evidence MCP for SMAT",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "bin": {
+    "smat-uiux": "./src/cli.mjs"
+  },
+  "scripts": {
+    "mcp": "node src/server.mjs",
+    "check": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs",
+    "test": "node --test test/*.test.mjs",
+    "audit:tokens": "node src/cli.mjs tokens design-system/tokens.json",
+    "test:runtime": "node --test test/runtime/*.test.mjs",
+    "verify": "npm run check && npm test && npm run test:runtime"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@modelcontextprotocol/server": "2.4.0",
+    "pixelmatch": "7.1.0",
+    "playwright": "1.65.0",
+    "pngjs": "7.0.0",
+    "zod": "4.6.7"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "ux-ui-agent-skills": "3.0.0"
+  }
+}

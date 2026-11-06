@@ -1,193 +1,48 @@
-# UI/UX Library — Vector-Powered Design Reference System
+# SMAT Interface Lab
 
-This is the canonical UI/UX component library and design reference system for all Jabbertones Cloud applications, powered by semantic vector search.
+**Status: source prototype with local gates. NOT deployed, NOT connected to a production Figma/Storybook host, NOT commercially approved.**
 
-## Features
-- **Semantic search** across 100K+ UI screenshots using SigLIP2 (image) + multilingual-e5-large (text) embeddings
-- **Hybrid ranking** (60% image similarity + 40% text similarity) for precise design discovery
-- **PostgreSQL pgvector** with HNSW indices for sub-second p99 query latency
-- **Production-ready** with circuit breaker protection, Prometheus metrics, Grafana dashboards, and automated backups
-- **Multi-app integration** — Use as a shared design reference system across all Jabbertones apps
+This is the working code and portable skill source for the UI/UX capability previously envisioned in `jabbertones-cloud/uiuxlibrary`. The earlier repository README described a 100K-screen vector service without corresponding code; that service is **not** an established dependency of this project.
 
-## Quick Start
+## What is actually implemented
 
-### 1. Initialize PostgreSQL Schema
-```bash
-npm run db:migrate
-```
+- `smat-uiux` portable Agent Skill: customer-outcome-first workflow, design review, donor research, adversarial quality gates, evidence contract.
+- Structural three-tier DTCG token governance, with standalone CLI + deliberately failing fixtures.
+- SHA-256 evidence receipt verification. It refuses to self-certify human reviewers, first-time customer tasks, or deployment truth.
+- A stdio MCP server source built against the official MCP TypeScript SDK v2 and using Playwright + axe-core for sampled, read-only, allowlisted browser inspections.
+- Local source tests for passing inputs, negative fixtures, stale/symlink evidence, user task and SHA gates.
 
-### 2. Start Prometheus Exporter
-```bash
-npm run prometheus:start
-```
+## Local no-network test
 
-### 3. Import Grafana Dashboard
-Visit http://localhost:3000, add Prometheus datasource, import dashboard from `dashboards/vector-db-dashboard.json`
+Node.js >=22.13.0:
 
-### 4. Ingest UI Screens
-```bash
-npm run ingest:appstore --batch-size 1000 --limit 100000
-```
-
-### 5. Query the System
-```typescript
-import { SemanticUISearch } from './src/semantic-ui-search';
-
-const searcher = new SemanticUISearch();
-const results = await searcher.search({
-  imageQuery: 'checkout_flow.png',
-  textQuery: 'payment processing form',
-  weights: { image: 0.6, text: 0.4 },
-  limit: 10
-});
-```
-
-## Architecture
-
-### Services
-- **Vector Database** — PostgreSQL pgvector (100K+ vectors)
-- **Embedding Service** — SigLIP2 (768-dim) + multilingual-e5-large (1024-dim)
-- **Search Engine** — HNSW indices, hybrid ranking, keyset pagination
-- **Circuit Breaker** — Protects against NAS PostgreSQL crashes
-- **Observability** — Prometheus metrics + Grafana dashboards
-- **Backup System** — Daily automated pg_dump with 30-day retention
-
-### Database Schema
-- `ui_screens` — Screen metadata (app_name, platform, source, category)
-- `ui_screen_embeddings` — 768-dim SigLIP2 + 1024-dim multilingual-e5-large vectors
-- `ui_ingestion_state` — Batch tracking and deduplication state
-
-### Performance Targets
-- **Query Latency** — p99 <1000ms (100K vectors)
-- **Ingestion Rate** — 200-500 vectors/second (batched)
-- **Dedup Rate** — <10% (atomic UNIQUE constraints)
-- **Circuit Breaker** — 3-failure threshold, 30s recovery timeout
-
-## Scaling Roadmap
-
-### Phase 1: 100K → 500K Vectors
-- Read replicas on EC2
-- PgBouncer connection pooling
-- Expected latency: <500ms p99
-- Cost: $300-400/mo
-
-### Phase 2: 500K → 1M Vectors
-- 4-shard horizontal sharding by screen_id%4
-- Distributed aggregator microservice
-- Expected latency: 600-900ms p99
-- Cost: $950/mo
-
-### Phase 3: 1M+ Vectors
-- Migrate to Weaviate/Milvus/Pinecone
-- Expected latency: 200-400ms p99
-- Cost: $1000-1500/mo
-
-## Integration Guide
-
-### For Jabbertones Apps
-
-Each app can use the shared UI Reference Engine:
-
-#### 1. SkynPatch
-```typescript
-import { UIReferenceClient } from '@jabbertones-cloud/uiuxlibrary';
-
-const uiRef = new UIReferenceClient({
-  endpoint: 'https://uiref.jabbertones.cloud',
-  apiKey: process.env.UIREF_API_KEY
-});
-
-// Search for checkout flow examples
-const examples = await uiRef.search('e-commerce checkout form');
-```
-
-#### 2. Plushtrap
-Use the same client to find fashion brand card designs:
-```typescript
-const fashionCards = await uiRef.search('brand product card with luxury styling');
-```
-
-#### 3. Other Apps
-All Jabbertones apps can query the shared library for design inspiration and component patterns.
-
-## API Endpoints
-
-### Search
-```
-POST /api/v1/search
-Content-Type: application/json
-
-{
-  "image_query": "base64-encoded-image",
-  "text_query": "payment flow",
-  "weights": { "image": 0.6, "text": 0.4 },
-  "limit": 10
-}
-```
-
-### Ingest
-```
-POST /api/v1/ingest
-Content-Type: application/json
-
-{
-  "screen_id": "appstore_123",
-  "image_base64": "...",
-  "text_content": "checkout form",
-  "metadata": { "app": "skynpatch", "platform": "ios" }
-}
-```
-
-### Health Check
-```
-GET /api/v1/health
-```
-
-## Monitoring
-
-All metrics available at `http://localhost:9090/metrics`:
-
-- `vectordb_total_vectors` — Total vectors in database
-- `vectordb_query_latency_ms` — Query latency (p50/p95/p99)
-- `vectordb_ingestion_total` — Total ingested vectors
-- `vectordb_dedup_rate` — Deduplication rate (%)
-- `vectordb_circuit_breaker_state` — Circuit breaker state (0=CLOSED, 1=OPEN, 2=HALF_OPEN)
-- `vectordb_nas_pool_size` — NAS database connection pool size
-
-## Testing
-
-```bash
-# Unit tests
+```sh
 npm test
-
-# Deduplication verification
-npm test -- tests/dedup-verification.test.ts
-
-# HNSW parameter benchmark (2+ hours)
-npm run benchmark:hnsw
-
-# AppStore integration tests (2 hours)
-npm test -- tests/appstore-integration.test.ts
-
-# E2E verification
-npm run test:e2e
+npm run check
+node src/cli.mjs tokens design-system/tokens.json
+node src/cli.mjs tokens fixtures/bad-tokens.json  # must exit 1
 ```
 
-## Deployment
+## MCP integration (requires dependency installation)
 
-See `docs/VECTOR-DB-DEPLOYMENT-CHECKLIST.md` for production deployment (4-6 hours).
+```sh
+npm install
+npx playwright install chromium
+UIUX_WORKSPACE=/absolute/path/to/target/app \
+  UIUX_ALLOW_ORIGINS=http://127.0.0.1:3000 \
+  node /absolute/path/to/uiuxlibrary/src/server.mjs
+```
 
-## Contributing
+Configure your MCP host to launch Node with this absolute `server.mjs` path and workspace environment. The server exposes `uiux_audit_tokens`, `uiux_audit_page`, `uiux_release_gate`, `uiux_research_donors`. It is **not** a replacement for Figma MCP, Storybook MCP, Playwright MCP, or their existing authentication models. Host connections must be independently configured and tested.
 
-1. Follow the SaaS completion codex for any new features
-2. Run `npm run lint && npm run test` before commits
-3. Add tests for all new endpoints
-4. Update Prometheus metrics for any new operations
+`uiux_audit_page` captures three viewports and runs axe WCAG-tagged automated rules. It **does not** verify all keyboard behaviors, user task success, or visual quality. Review all screenshots as actual artifact evidence.
 
-## License
+## Quality contract
 
-Proprietary — Jabbertones Cloud
+Read [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/SECURITY.md](docs/SECURITY.md). Reuse donor tools according to [docs/DONORS.md](docs/DONORS.md); entries are researched candidates, not a guarantee that installation or runtime tests succeeded.
 
-## Support
+Do not interpret 11 unit tests or a self-reported receipt as live product acceptance. The full proof line remains CODE -> EXACT HEAD -> MERGE -> EXACT MAIN -> DEPLOY -> LIVE CUSTOMER ACCEPTANCE -> ADVERSARIAL REGRESSION.
 
-Contact: jamonwidit@plushtrap.com
+## Licenses
+
+The SMAT-authored source is proprietary pending an explicit licensing decision (`UNLICENSED`). No external donor source code is copied into this distribution; adapters call published upstream APIs/packages. Consult each upstream dependency's license and commercial terms separately before deployment. Donor SHA links are evidence of what was inspected, not installed dependencies.

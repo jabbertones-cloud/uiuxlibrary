@@ -1,0 +1,38 @@
+{
+  "$description": "SMAT example only. Replace with measured product brand tokens; do not impose one visual theme on the fleet.",
+  "primitive": {
+    "color": {
+      "paper": { "$type": "color", "$value": "#ffffff" },
+      "ink": { "$type": "color", "$value": "#20232a" },
+      "brand": { "$type": "color", "$value": "#2555d4" }
+    },
+    "spacing": {
+      "sm": { "$type": "dimension", "$value": "8px" },
+      "md": { "$type": "dimension", "$value": "16px" }
+    }
+  },
+  "semantic": {
+    "surface": {
+      "canvas": { "$type": "color", "$value": "{primitive.color.paper}" }
+    },
+    "text": {
+      "primary": { "$type": "color", "$value": "{primitive.color.ink}" }
+    },
+    "action": {
+      "primary": { "$type": "color", "$value": "{primitive.color.brand}" }
+    },
+    "space": {
+      "control": { "$type": "dimension", "$value": "{primitive.spacing.md}" }
+    }
+  },
+  "component": {
+    "button": {
+      "background": { "$type": "color", "$value": "{semantic.action.primary}" },
+      "padding": { "$type": "dimension", "$value": "{semantic.space.control}" }
+    },
+    "page": {
+      "background": { "$type": "color", "$value": "{semantic.surface.canvas}" },
+      "text": { "$type": "color", "$value": "{semantic.text.primary}" }
+    }
+  }
+}
