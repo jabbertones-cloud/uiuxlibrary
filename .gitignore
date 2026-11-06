@@ -1,0 +1,5 @@
+node_modules/
+.uiux-evidence/
+.tmp/
+.DS_Store
+*.log
