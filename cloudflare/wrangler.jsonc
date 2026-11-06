@@ -1,8 +1,9 @@
 {
-  "name": "smat-interface-lab-mcp",
+  "name": "smat-uiux-mcp",
   "main": "./worker.mjs",
   "compatibility_date": "2026-11-05",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
-  "vars": { "GIT_SHA": "b79446db804db494d8088a2f684e894f0cea8823" }
+  "routes": [{ "pattern": "uiux.smatdesigns.com", "custom_domain": true }],
+  "vars": { "GIT_SHA": "6c54581ab1579bdd1be477592f0ff67bb68269eb" }
 }
