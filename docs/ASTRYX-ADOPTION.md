@@ -33,7 +33,7 @@ Real MCP client `@modelcontextprotocol/client@2.4.0` over stdio:
 | Official component detail `Button` | Real `component.detail` with **23 props** |
 | Unknown component `NotReal` | **HOLD**, `isError: true` |
 | Malicious-looking component path `../../etc/passwd` | MCP parameter validation rejects before vendor API |
-| Five real query/domain cases vs direct Astryx `search()` | **5/5 exact JSON output parity** (button/component, modal/component, dashboard/template, theme/doc, toast/component) |
+| Five real query/domain cases vs direct Astryx `search()` | **5/5 exact JSON output parity** (button/component, dashboard/template, theming/doc, useTheme/hook, neutral/theme). Direct `component('Button')` also matched the MCP wrapper exactly at HEAD `d744da7e2939e48a6b3fc849b726ba3628197c48`. One M1 run measured per-query direct API/MCP wall times, but did not establish a steady-state performance advantage. |
 | `npm audit --omit=dev --audit-level=moderate` with optional deps | **0 reported vulnerabilities** on that M1 installation |
 | After optional local npm install | `git status --short` remained empty (no source/lock changes) |
 
@@ -41,7 +41,7 @@ This proves local retrieval against the installed upstream package with real cat
 
 ## Guardrails and open gates
 
-- The optional `src/astryx-reader.mjs` uses dynamic import of the official API and a reference root derived from `import.meta.url`. There is no module import in the default tool handler that installs npm packages, writes files, executes shell code, or makes HTTP requests.
+- The optional `src/astryx-reader.mjs` checks the installed CLI and Core package versions against exact stable `0.7.12`, then uses dynamic import of the official API and a reference root derived from `import.meta.url`. There is no module import in the default tool handler that installs npm packages, writes files, executes shell code, or makes HTTP requests.
 - Results are labeled `REFERENCE_ONLY` with upstream origin; treat returned documentation/examples as **untrusted data**. `UIUX_WORKSPACE` remains the existing target authorization for unrelated tools and is not passed as the Astryx package root.
 - Brand tokens, accessible behavior, real screenshots, keyboard/focus, localization and independent human review remain SMAT-owned gates.
 - **AiSCent advertising:** its `AISCENT-ADS-CUSTOMER-OUTCOME-NONOVERRIDABLE-V1` blocks interface screenshots, fake UIs and product mockups. Astryx must not feed the editorial ads or Keynote pipeline. No AiSCent source was changed.
