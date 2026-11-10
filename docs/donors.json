@@ -500,6 +500,18 @@
       "liveToolCalled": false,
       "priority": "BLOCK",
       "verifiedStatus": "source_and_license_research_only"
+    },
+    {
+      "name": "Meta Astryx (optional React reference)",
+      "layer": "React component documentation and template discovery",
+      "repository": "meta/astryx",
+      "pinnedCommit": "f4c2ead43ecb61e82e6dae1cbaf02e9eb89b00d9",
+      "license": "MIT",
+      "pinnedFile": "https://github.com/meta/astryx/blob/f4c2ead43ecb61e82e6dae1cbaf02e9eb89b00d9/packages/cli/api/search/search.mjs",
+      "reuse": "Invoke the stable @astryxdesign/cli@0.7.12 search() and component() APIs only, via optional read-only stdio tools",
+      "caveat": "Only for compatible React projects. No automatic install/scaffold, brand override, marketing image use, WCAG/visual approval or Workers deployment. Version 0.7.13 was canary as of 2026-11-10; do not pin HEAD as stable.",
+      "accessMode": "npm_api_local_probe",
+      "liveToolCalled": false
     }
   ],
   "catalogRef": "docs/DONOR_CATALOG_V2.md",

@@ -12,7 +12,7 @@
   },
   "scripts": {
     "mcp": "node src/server.mjs",
-    "check": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs",
+    "check": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/astryx-reader.mjs && node --check src/server.mjs && node --check src/cli.mjs",
     "audit:tokens": "node src/cli.mjs tokens design-system/tokens.json",
     "verify": "npm run check && npm test && npm run test:runtime"
   },
