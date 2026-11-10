@@ -23,6 +23,30 @@ node src/cli.mjs tokens design-system/tokens.json
 node src/cli.mjs tokens fixtures/bad-tokens.json  # must exit 1
 ```
 
+
+## Optional Meta Astryx component reference
+
+The local **stdio** MCP can optionally expose official [Meta Astryx](https://github.com/meta/astryx/tree/f4c2ead43ecb61e82e6dae1cbaf02e9eb89b00d9) documentation for React projects. This is not enabled in the default installation and is **not** a replacement for SMAT component evaluation, token governance, accessibility checks, real user testing, or brand art direction. The Cloudflare /mcp Worker remains its existing two-tool surface.
+
+Install exact stable packages in this repository without modifying package.json, package-lock.json, project agent instructions, or running Astryx init:
+
+```sh
+npm ci --ignore-scripts
+npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund @astryxdesign/cli@0.7.12 @astryxdesign/core@0.7.12
+UIUX_ASTRYX_ENABLED=1 UIUX_WORKSPACE=/absolute/path/to/authorized/app npm run mcp
+```
+
+With the flag, **two additional read-only tools** are registered:
+
+- `uiux_astryx_search`: bounded query, domain (`component`, `hook`, `doc`, `template`, `theme`) and limit; uses Astryx's own `search()` ranking rather than a local copy.
+- `uiux_astryx_component`: official component usage, props, and examples from Astryx's `component()` API.
+
+Both return `REFERENCE_ONLY`, a pinned donor source, and untrusted documentation. They never call scaffolding, theme modification, package installation or remote Astryx MCP. Requests return an explicit `HOLD` if the optional packages are absent; unsetting the flag removes both tools on the next server start. The adapter resolves its reference root from the package location, not the caller's potentially private UIUX_WORKSPACE.
+
+**Do not use Astryx UI in AiSCent advertising.** AiSCent's `AISCENT-ADS-CUSTOMER-OUTCOME-NONOVERRIDABLE-V1` prohibits app interfaces, screenshots and mockups in ads. Editorial marketing and native Keynote composition are unchanged. Astryx is suitable only as an optional source for separately authorized React UI work.
+
+See [adoption evidence and limitations](docs/ASTRYX-ADOPTION.md). No automatic design approval or production deployment is implied.
+
 ## MCP integration (requires dependency installation)
 
 ```sh
