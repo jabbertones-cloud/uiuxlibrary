@@ -33,6 +33,7 @@ Real MCP client `@modelcontextprotocol/client@2.4.0` over stdio:
 | Official component detail `Button` | Real `component.detail` with **23 props** |
 | Unknown component `NotReal` | **HOLD**, `isError: true` |
 | Malicious-looking component path `../../etc/passwd` | MCP parameter validation rejects before vendor API |
+| Installed Core package version deliberately altered to `0.7.11` in the local ignored `node_modules`, then restored | `uiux_astryx_component` returned **HOLD**, `isError: true`, version mismatch expected `0.7.12`; the original manifest was restored via shell trap |
 | Five real query/domain cases vs direct Astryx `search()` | **5/5 exact JSON output parity** (button/component, dashboard/template, theming/doc, useTheme/hook, neutral/theme). Direct `component('Button')` also matched the MCP wrapper exactly at HEAD `d744da7e2939e48a6b3fc849b726ba3628197c48`. One M1 run measured per-query direct API/MCP wall times, but did not establish a steady-state performance advantage. |
 | `npm audit --omit=dev --audit-level=moderate` with optional deps | **0 reported vulnerabilities** on that M1 installation |
 | After optional local npm install | `git status --short` remained empty (no source/lock changes) |
