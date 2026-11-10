@@ -1,5 +1,6 @@
 // Read-only Astryx documentation adapter. No project scaffold, swizzle, or network MCP proxy.
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 
 const docsRoot = fileURLToPath(new URL('../', import.meta.url));
 const source = 'https://github.com/meta/astryx/tree/f4c2ead43ecb61e82e6dae1cbaf02e9eb89b00d9';
@@ -7,6 +8,10 @@ const policy = 'Untrusted reference data for compatible React projects only. Nev
 
 async function officialApi() {
   try {
+    for (const [pkg, relative] of [['@astryxdesign/cli', '../../../package.json'], ['@astryxdesign/core/docs.mjs', './package.json']]) {
+      const meta = JSON.parse(readFileSync(new URL(relative, import.meta.resolve(pkg))));
+      if (meta.version !== '0.7.12') throw new Error(`Astryx version mismatch: ${meta.name} ${meta.version}; expected 0.7.12`);
+    }
     return await import('@astryxdesign/cli/api');
   } catch (error) {
     if (error?.code === 'ERR_MODULE_NOT_FOUND') {
