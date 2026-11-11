@@ -9,6 +9,23 @@
 - FedWatch checkout `jabbertones-cloud/Fedwatch` at **`f77974c9c657bdb806c38cffdc6c395c6f26021a`**: initial generic Test Lab fast check produced false-looking build/test failures because it searched the repository root instead of the actual nested project `Apple/FedWatchNative/FedWatchNative.xcodeproj`. Xcode project introspection located the real `FedWatchNative` scheme. A separate actual `xcodebuild test` on an iPhone 16e simulator running iOS 26.3.1 completed with an `xcresult` summary of **34 passed, 0 failed, 1 skipped**. The summary also contained repeated **"Invalid frame dimension (negative or non-finite)"** runtime warnings. Those warnings are a targeted investigation candidate; neither a customer-visible layout defect nor its root cause has been independently reproduced. No real first-time human tested this build.
 - Clean Quest checkout `jabbertones-cloud/cleanquest` at **`1153a6fe0a18bd24828f1c4b609bae288d648251`**: source and project introspection located `native/CleanQuest.xcodeproj`, scheme `CleanQuest`. A scoped real simulator `xcodebuild test` run of `CleanQuestTests/OnboardingV2Tests` completed with an `xcresult` summary of **10 passed, 0 failed, 0 skipped** on the iPhone 16e simulator running iOS 26.3.1. Covered cases included state persistence, relaunch/dismissal, version migration, plan preview and goal-change replanning. Compiler warnings remain about an unused frame index and asynchronous notification API usage; neither was an observed customer defect. These are **unit tests of part of onboarding**, not an end-to-end first-use run or live TestFlight task.\n- EzSeller source at **`8fe74de736e4055d22ab483cf02f8f4dddacbb76`**: `Apple/Shared/EzSellerAppStates.swift`'s `NotifyWhenAvailableButton` saves a local `@AppStorage` opt-in Boolean and requests notification permission, then displays **"You're on the list — we'll remind you here when this opens."** The inspected scheduling functions in `Apple/Shared/EzSellerLocalNotify.swift` handle seller/inventory alerts, not an independently established plan-availability event. This is a **source-based candidate**, not proof no other fulfillment route exists. Follow the real event/provider/delivery path before concluding a defect. [EzSeller investigation #1382](https://github.com/jabbertones-cloud/ezamazon/issues/1382).
 
+## Iteration receipt: FedWatch native contrast candidate
+
+The first rendered native screenshot revealed low-contrast *essential first-search text*, even though the Xcode suite passed. In `SearchView.swift` the supporting copy used `.foregroundStyle(.secondary)`; the input used its default placeholder. The Section's helper and heading in `SearchSuggestions.swift` also inherited low-contrast styles.
+
+On the same iPhone 16e simulator, exact-source baseline `f77974c9c657bdb806c38cffdc6c395c6f26021a` vs exact candidate `e0118abf81617877910567db4847410fe36c5b10` (draft [FedWatch PR #84](https://github.com/jabbertones-cloud/Fedwatch/pull/84)), representative measured rendered light foreground/background contrast improved as follows:
+
+| First-search role | Baseline | Candidate |
+| --- | ---: | ---: |
+| Intro and domain explanatory text | 4.00:1 | 11.73:1 |
+| Example heading | 3.29:1 | 10.98:1 |
+| Example helper | 4.00:1 | 11.73:1 |
+| Input placeholder | 1.72:1 | 11.73:1 |
+
+Dark appearance on the candidate was captured and sampled: 10.07:1 to 12.42:1 across these text roles. The actual candidate `xcodebuild test` suite repeated **34 passed, 0 failed, 1 skipped**, with unchanged invalid-frame warnings. Only two native SwiftUI view files changed; no data or auth path. PR is draft until human review, keyboard, VoiceOver, Dynamic Type and signed release verification.
+
+**New rule learned after running the program:** Inspect *rendered pixels on the exact screen after meaningful paint*, in both appearances, and calculate contrast for the actual text role and background. Native platform defaults can still render essential small prompts too faintly. A green test bundle does not substitute for optical review. Treat a transient blank launch frame separately from a settled state; never silently score it as the app's final screen.
+
 ## Added quality gates: learn from the run, not just the visual output
 
 ### 1. Build passport, not a filename or brand guess
@@ -55,4 +72,4 @@ The private audit ledger may contain restricted device/app identifiers as necess
 - Fix only reproducible defects with a verified donor/native API and scoped branch. No invented framework. Re-run at least two iterations with negative states, human review and exact-head release gates.
 - Source changes, PR approval, merge, deployment, App Store state and live user success are different receipts. A PR or a simulator test never implies an app has been shipped.
 
-**Current outcome:** One FedWatch simulator suite and one focused Clean Quest onboarding suite verified, one EzSeller promise-delivery question filed, significant native fleet inventory gathered; no product source change, merged fix, TestFlight upload, customer task sign-off or comprehensive fleet finish is asserted.
+**Current outcome:** FedWatch baseline and exact-head candidate simulator suites verified, one FedWatch two-file contrast PR drafted, one focused Clean Quest onboarding suite verified, one EzSeller promise-delivery question filed, significant native fleet inventory gathered; no product source change, merged fix, TestFlight upload, customer task sign-off or comprehensive fleet finish is asserted.
