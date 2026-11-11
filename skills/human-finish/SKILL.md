@@ -5,7 +5,7 @@ description: Research, critique, redesign, polish and verify websites, apps, MCP
 
 # Human Finish
 
-**Doctrine:** Scale intent, not efficiency. Make quality mean that the work demonstrates a deliberate understanding of a person, a real job, a distinct brand, the moment of use and the cost of failure. Removing gradients and AI words is not enough. Use [the operating system](../../docs/HUMAN-FINISH-OPERATING-SYSTEM.md), [project charter](../../docs/HUMAN-FINISH-PROJECT-CHARTER.md), [dated research evidence](../../docs/HUMAN-FINISH-RESEARCH-20261110.md), [live audit](../../docs/HUMAN-FINISH-FIRST-LIVE-AUDIT-20261110.md), [multi-route craft lesson](../../docs/HUMAN-FINISH-LESSON-AISCENT-CONTRAST-20261110.md), [intent-continuity lesson](../../docs/HUMAN-FINISH-LESSON-USER-PATH-CONTEXT-20261110.md) and [pilots](../../docs/HUMAN-FINISH-PILOTS.md).
+**Doctrine:** Scale intent, not efficiency. Make quality mean that the work demonstrates a deliberate understanding of a person, a real job, a distinct brand, the moment of use and the cost of failure. Removing gradients and AI words is not enough. Use [the operating system](../../docs/HUMAN-FINISH-OPERATING-SYSTEM.md), [project charter](../../docs/HUMAN-FINISH-PROJECT-CHARTER.md), [dated research evidence](../../docs/HUMAN-FINISH-RESEARCH-20261110.md), [live audit](../../docs/HUMAN-FINISH-FIRST-LIVE-AUDIT-20261110.md), [multi-route craft lesson](../../docs/HUMAN-FINISH-LESSON-AISCENT-CONTRAST-20261110.md), [intent-continuity lesson](../../docs/HUMAN-FINISH-LESSON-USER-PATH-CONTEXT-20261110.md) and [pilots](../../docs/HUMAN-FINISH-PILOTS.md) and [native fleet lesson](../../docs/HUMAN-FINISH-LESSON-NATIVE-FLEET-20261110.md).
 
 ## Four separate design contracts
 
@@ -31,6 +31,17 @@ One product may need all four separate passes; keep the same factual promise but
 11. Compare baseline/candidate on identical real tasks and viewports. Run installed Playwright/axe/Storybook/visual-diff and actual tool tasks where possible, but these checks cannot self-certify human taste, autonomy, conversion or task success. Preserve repo's tests-removed policy; do not create green synthetic test theater.
 12. Obtain independent first-user task and human craft evidence. Existing [Interface Lab acceptance](../../docs/ACCEPTANCE.md) and per-product policies govern release. A self-signed receipt is not human review.
 13. Close CODE -> EXACT HEAD -> MERGE -> EXACT MAIN -> DEPLOY -> LIVE ACCEPTANCE -> ADVERSARIAL/REGRESSION. Bank every escaped defect as source, cause, repair, adverse case and affected projects.
+
+## Native/TestFlight fleet audit and iterative improvement
+
+When reviewing multiple native apps or TestFlight builds, follow [the native fleet lesson](../../docs/HUMAN-FINISH-LESSON-NATIVE-FLEET-20261110.md), not an undifferentiated visual checklist.
+
+1. **Inventory fidelity:** Separate installed bundles, true TestFlight builds, App Store versions and source checkouts. Record exact bundle/version/build/source-SHA and missing links. Do not call an installed app a beta build without proof.
+2. **Test what is available:** Discover the nested Xcode project/workspace, actual scheme and simulator/device before running tests. Classify an invalid harness, signing/toolchain failure, locked phone, unavailable UI automation, and reproduced product defect as distinct outcomes. Preserve raw `xcresult` and warnings. Never treat a false tool failure as a product regression.
+3. **Repeat three focused passes:** first-value job and promise truth; native craft, VoiceOver/Dynamic Type and all meaningful states; adjacent-route and adverse regression after each repair. For each iteration log what was checked, what improved, which previously passing states regressed, and what could not be reached. A green test suite does not prove the customer journey.
+4. **Audit promise delivery:** Trace `promise → user action → persisted state → event/provider → delivery artifact → recipient verification → cancellation/recovery` for notifications, reminders, subscriptions, planned actions and service follow-up. Merely storing a Boolean, showing success or obtaining notification permission is not fulfillment.
+5. **Protect private context:** Never put device UDIDs, screenshots of conversations, credentials or sensitive customer data into shared quality lessons. Record real-user acceptance separately from machine/test evidence.
+6. **Close only by evidence:** File actionable source-backed defects with the downstream effect and negative state. Use a dedicated branch and sourced native donor for repairs, then exact-head tests, merge, exact-main, release, live readback and independent first-user evaluation before marking `APPROVED`. No guessed customer outcome or invented automation.
 
 ## Failure and release hierarchy
 
