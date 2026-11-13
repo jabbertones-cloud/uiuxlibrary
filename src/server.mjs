@@ -9,6 +9,7 @@ import { auditTokens } from './token-gate.mjs';
 import { assessReceipt, withinWorkspace } from './receipt-gate.mjs';
 import { auditPage } from './browser-adapter.mjs';
 import { diffScreenshots } from './screenshot-diff.mjs';
+import { judgeNativeCapture } from './native-judge.mjs';
 import { testStagingFlow } from './flow-adapter.mjs';
 
 const workspace = resolve(process.env.UIUX_WORKSPACE || process.cwd());
@@ -22,6 +23,7 @@ function readProjectJson(file) {
 function createServer() {
   const server = new McpServer({ name: 'smat-interface-lab', version: '0.2.0' });
   server.registerTool('uiux_audit_tokens', {
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     description: 'Read DTCG tokens and enforce SMAT 3-tier reference policy. Structural only; not WCAG contrast.',
     inputSchema: z.object({ file: z.string().min(1) })
   }, async ({ file }) => {
@@ -29,6 +31,7 @@ function createServer() {
     catch (e) { return held(e); }
   });
   server.registerTool('uiux_audit_page', {
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     description: 'Sample five real browser viewports with Playwright + axe, screenshot hashes and actionable failures. Requires exact UIUX_ALLOW_ORIGINS. Automated only.',
     inputSchema: z.object({ url: z.url(), theme: z.enum(['light', 'dark']).default('light') })
   }, async ({ url, theme }) => {
@@ -36,13 +39,27 @@ function createServer() {
     catch (e) { return held(e); }
   });
   server.registerTool('uiux_diff_screenshots', {
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
     description: 'Compare same-size PNGs under workspace with pixelmatch and hash the diff artifact. Never claims visual improvement.',
     inputSchema: z.object({ before: z.string().min(1), after: z.string().min(1), threshold: z.number().min(0).max(0.3).default(0.1) })
   }, async ({ before, after, threshold }) => {
     try { return output(diffScreenshots(before, after, workspace, { threshold })); }
     catch (e) { return held(e); }
   });
+  server.registerTool('uiux_review_aiscent_native', {
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    description: 'Read AiSCent God Mode capture-plan results for native iOS/iPadOS/macOS. Verify XCUITest screen identity, PNG bytes, matrix completeness and optional human-anchored rubric. Fail closed; no automatic visual score or TestFlight claims.',
+    inputSchema: z.object({ capture: z.string().min(1), plan: z.string().min(1),
+      review: z.string().min(1).optional() })
+  }, async ({ capture, plan, review }) => {
+    try {
+      const payload = judgeNativeCapture(readProjectJson(capture), readProjectJson(plan),
+        workspace, review ? readProjectJson(review) : undefined);
+      return output(payload);
+    } catch (e) { return held(e); }
+  });
   server.registerTool('uiux_test_staging_flow', {
+    annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
     description: 'Opt-in deterministic Playwright staging task with accessible roles and labels. DISABLED by default. Not a substitute for real first-time human testing.',
     inputSchema: z.object({
       url: z.url(), steps: z.array(z.discriminatedUnion('action', [
@@ -56,6 +73,7 @@ function createServer() {
     catch (e) { return held(e); }
   });
   server.registerTool('uiux_release_gate', {
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     description: 'Validate SHA-bound evidence receipts and customer-outcome gates; NEVER independently certifies production or user testing.',
     inputSchema: z.object({ receipt: z.string().min(1), release: z.boolean().default(false) })
   }, async ({ receipt, release }) => {
@@ -63,6 +81,7 @@ function createServer() {
     catch (e) { return held(e); }
   });
   server.registerTool('uiux_research_donors', {
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     description: 'Read pinned research-only donor catalogue with licenses, source refs, and adoption caveats. Does not invoke donors.',
     inputSchema: z.object({})
   }, async () => output(JSON.parse(readFileSync(new URL('../docs/donors.json', import.meta.url), 'utf8'))));
