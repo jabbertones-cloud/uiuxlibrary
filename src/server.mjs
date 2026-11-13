@@ -11,6 +11,7 @@ import { auditPage } from './browser-adapter.mjs';
 import { diffScreenshots } from './screenshot-diff.mjs';
 import { judgeNativeCapture } from './native-judge.mjs';
 import { compareNativeAudits } from './native-audit-diff.mjs';
+import { nativeBinaryProof } from './native-binary-proof.mjs';
 import { testStagingFlow } from './flow-adapter.mjs';
 import { registerNativeTools } from './native-tools.mjs';
 import { registerNativeTranslationTools } from './native-translation-tools.mjs';
@@ -64,13 +65,20 @@ function createServer() {
   server.registerTool('uiux_compare_native_audits', {
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     description: 'Compare two verified AiSCent native captures with Apple audit findings, fail on any worsened category even if total decreases. Not a UX rating.',
-    inputSchema: z.object({ beforeCapture: z.string().min(1), afterCapture: z.string().min(1), plan: z.string().min(1) })
-  }, async ({ beforeCapture, afterCapture, plan }) => {
+    inputSchema: z.object({ beforeCapture: z.string().min(1), afterCapture: z.string().min(1), plan: z.string().min(1),
+      beforeBinary: z.string().min(1).optional(), afterBinary: z.string().min(1).optional() })
+  }, async ({ beforeCapture, afterCapture, plan, beforeBinary, afterBinary }) => {
     try {
       const spec = readProjectJson(plan);
       const before = judgeNativeCapture(readProjectJson(beforeCapture), spec, workspace);
       const after = judgeNativeCapture(readProjectJson(afterCapture), spec, workspace);
-      return output(compareNativeAudits(before, after));
+      if (Boolean(beforeBinary) !== Boolean(afterBinary))
+        throw new Error('Both native binary files are required for accessibility-only comparisons');
+      const binaryProof = beforeBinary && afterBinary ? {
+        beforeSha: nativeBinaryProof(beforeBinary, workspace).sha256,
+        afterSha: nativeBinaryProof(afterBinary, workspace).sha256
+      } : {};
+      return output(compareNativeAudits(before, after, binaryProof));
     } catch (e) { return held(e); }
   });
   server.registerTool('uiux_test_staging_flow', {

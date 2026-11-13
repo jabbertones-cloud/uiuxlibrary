@@ -118,3 +118,16 @@ EzSeller iPhone 16e dogfood, Nov. 13: A(15 findings) to B(14) regressed
 clipped text and hit-region categories; B(14) to C(12) introduced no new
 category count regression. Independent TestFlight-binary identity and human
 task completion remain unverified.
+
+## Accessibility-only changes when pixels are identical
+
+For native audits, animated/scaled UI can change Apple accessibility findings
+without changing the settled screenshot bytes. The comparison MCP keeps
+IDENTICAL_SCREENSHOT_BYTES as HOLD by default. Operators may optionally
+provide two **local binary file paths**; the judge re-hashes bounded regular
+files using the existing workspace boundary and SHA-256 helper. Only distinct
+local bytes permit ACCESSIBILITY_ONLY_CANDIDATE (or category regression)
+with the same screenshot hash. The result explicitly does **not** prove the
+binary was installed at capture time, TestFlight identity, or human usability.
+Never use this result as a release pass without independent capture-to-build
+attestation.

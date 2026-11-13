@@ -31,3 +31,25 @@ test('identical bytes and incompatible matrices fail closed',()=>{
  assert.equal(compareNativeAudits({...a,accessibilityAudit:{state:'NOT_RUN'}},c).status,'HOLD');
  assert.equal(compareNativeAudits({...a,screenshots:[{cell:'other',sha256:'different'}]},c).reason,'SCREEN_MATRIX_CHANGED');
 });
+test('identical pixels with distinct local binaries are an accessibility-only candidate, not a UX score',()=>{
+ const first=capture('same',{contrast:5,textClipped:7});
+ const next=capture('same',{contrast:5,textClipped:0});
+ const proof={beforeSha:'a'.repeat(64),afterSha:'b'.repeat(64)};
+ assert.equal(compareNativeAudits(first,next).reason,'IDENTICAL_SCREENSHOT_BYTES');
+ assert.equal(compareNativeAudits(first,next,{...proof,afterSha:proof.beforeSha}).status,'HOLD');
+ assert.equal(compareNativeAudits(first,next,{beforeSha:'bad',afterSha:'c'.repeat(64)}).status,'HOLD');
+ const diff=compareNativeAudits(first,next,proof);
+ assert.equal(diff.status,'ACCESSIBILITY_ONLY_CANDIDATE');
+ assert.equal(diff.sameScreenshotBytes,true);
+ assert.equal(diff.changeInTotalIssues,-7);
+ assert.deepEqual(diff.regressionCategories,[]);
+ assert.ok(diff.notProven.includes('capture-time binary binding'));
+ assert.equal(diff.score,undefined);
+});
+test('same pixels still flag worsened Apple categories with distinct local binary hashes',()=>{
+ const before=capture('same',{contrast:3,textClipped:2});
+ const after=capture('same',{contrast:3,textClipped:4});
+ const diff=compareNativeAudits(before,after,{beforeSha:'a'.repeat(64),afterSha:'b'.repeat(64)});
+ assert.equal(diff.status,'CATEGORY_REGRESSION');
+ assert.deepEqual(diff.regressionCategories,['textClipped']);
+});
