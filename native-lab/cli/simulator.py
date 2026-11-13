@@ -71,6 +71,20 @@ def screen_config(file: str, screen: str) -> tuple[dict, dict]:
     return config, shot
 
 
+def bundle_locale_evidence(app_path: Path, requested: str) -> dict:
+    # Real installed bundle evidence, not translation-completeness certification.
+    roots = [app_path, app_path / "Contents" / "Resources"]
+    found = sorted({p.name[:-6] for root in roots if root.is_dir()
+                    for p in root.glob("*.lproj") if p.is_dir() and p.name != "Base.lproj"})
+    source = requested.replace("_", "-")
+    primary = source.split("-")[0]
+    equivalent = {source, primary} if primary != "zh" else {source}
+    return {"topLevelLprojLocales": found,
+            "requestedLocaleHasBundleResources": any(x in found for x in equivalent),
+            "evidenceType": "installed_app_top_level_lproj",
+            "limitation": "Other runtime or remote translations are not inspected; verify text in screenshot."}
+
+
 def checked_screen(config: dict, shot: dict, device: str, locale: str) -> None:
     plan = {"version": 1, "app": {"bundle_id": config["bundleId"]},
             "matrix": {"locales": [locale], "devices": [device]},
@@ -141,6 +155,7 @@ def capture(args: argparse.Namespace) -> dict:
             "navigationMethod": "launch_arguments" if launch_args else "deep_link",
             "dataMode": "review_demo" if "--review-demo" in launch_args else "unverified",
             "locale": args.locale, "localeScope": "app_launch_arguments_only",
+            "bundleLocalization": bundle_locale_evidence(app_path, args.locale),
             "device": target["name"], "udid": target["udid"], "display": args.display or ports[0],
             "settled": settled, "settleMs": wait_ms, "png": str(out),
             "sha256": quality.sha256_of(out), "size": [width, height],
