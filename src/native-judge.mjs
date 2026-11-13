@@ -16,7 +16,7 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
     const key = nativeCellKey(cell);
     const matched = indexed.get(key) || [];
     if (matched.length !== 1) { errors.push({ cell: key, code: 'MISSING_OR_DUPLICATE_CELL' }); continue; }
-    const proof = checkNativeShot(matched[0], cell, workspace);
+    const proof = checkNativeShot(matched[0], cell, workspace, platform);
     if (!proof.ok) { errors.push({ cell: key, code: proof.reason }); continue; }
     if (digests.has(proof.image.sha256)) {
       errors.push({ cell: key, code: 'DUPLICATE_SCREEN_IMAGE', other: digests.get(proof.image.sha256) });
@@ -37,5 +37,6 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
     accessibilityAudit: summarizeNativeAccessibility(audits, expected.length,
       plan?.modes?.audit_accessibility === true),
     notVerified: ['exact_testflight_binary', 'capture_provider_origin_independently_authenticated', 'visual_design_without_human_review',
-      'accessibility_beyond_selected_anchor', 'user_task_success', 'production_readiness'] };
+      'accessibility_beyond_selected_anchor', 'user_task_success', 'production_readiness',
+      ...(platform === 'mac' ? ['macos_accessibility_audit_not_run'] : [])] };
 }
