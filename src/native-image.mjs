@@ -3,6 +3,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { isAbsolute, relative } from 'node:path';
 import { PNG } from 'pngjs';
 import { withinWorkspace } from './receipt-gate.mjs';
+import { nativeVisibleContent } from './native-visual.mjs';
 
 const HASH = /^[0-9a-f]{64}$/;
 export function verifyNativePng(shot, root) {
@@ -24,7 +25,10 @@ export function verifyNativePng(shot, root) {
     const parsed = PNG.sync.read(bytes);
     if (parsed.width !== width || parsed.height !== height)
       return { ok: false, reason: 'PNG_DECODE_MISMATCH' };
-    return { ok: true, width, height, sha256: shot.bytes_sha256 };
+    const visual = nativeVisibleContent(parsed);
+    if (!visual.ok)
+      return { ok: false, reason: 'PNG_VISIBLE_CONTENT_EMPTY', visual };
+    return { ok: true, width, height, sha256: shot.bytes_sha256, visual };
   } catch {
     return { ok: false, reason: 'PNG_MISSING_INVALID_OR_OUTSIDE_WORKSPACE' };
   }
