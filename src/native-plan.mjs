@@ -10,7 +10,9 @@ export function nativeExpectedCells(plan) {
   if (![...locales, ...devices].every(x => typeof x === 'string' && x.length))
     throw new Error('Unresolved locale or device in capture matrix');
   const cells = locales.flatMap(locale => devices.flatMap(device =>
-    plan.shots.map(shot => ({ locale, device, name: shot.name, wait_for: shot.wait_for }))));
+    plan.shots.map(shot => ({ locale, device, name: shot.name, wait_for: shot.wait_for,
+      bundle_id: plan.app.bundle_id, tap_steps: (shot.reach?.steps || []).map(s => s.tap),
+      element_type: shot.wait_for_traits?.element_type || '' }))));
   if (cells.length > 10000 || cells.some(x => !/^[0-9]{2}-[a-z0-9-]+$/.test(x.name || '') ||
       typeof x.wait_for !== 'string' || !x.wait_for))
     throw new Error('Invalid or oversized capture-plan matrix');

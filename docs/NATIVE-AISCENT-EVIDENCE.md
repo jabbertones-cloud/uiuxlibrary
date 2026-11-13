@@ -29,7 +29,7 @@ Then call `uiux_review_aiscent_native` with:
 
 The reviewer verifies one and only one result per planned cell, matching bundle,
 not dry-run, honest XCUITest `wait_for`, `destination_verified`, image QA,
-actual local PNG hash and decoding. It rejects repeated byte-identical screens.
+actual local PNG hash and decoding. It cross-checks witness identifier, bundle ID, simulator UDID, element type, tap sequence and PNG SHA-256 against the plan and file. It rejects repeated byte-identical screens.
 It reports an **evidence coverage percentage**, never a fabricated UX quality percentage.
 Missing captures, simulator errors, external paths, symlinks, missing visuals and all
 current Mac-only window captures are **HOLD**, not PASS.

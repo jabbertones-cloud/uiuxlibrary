@@ -32,6 +32,6 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
     bundleId: plan.app.bundle_id, matrixCells: expected.length, verifiedCells: verified.length,
     captureCoveragePercent: Number((100 * verified.length / expected.length).toFixed(1)),
     rating, findings: errors, screenshots: verified,
-    notVerified: ['exact_testflight_binary', 'visual_design_without_human_review',
+    notVerified: ['exact_testflight_binary', 'capture_provider_origin_independently_authenticated', 'visual_design_without_human_review',
       'accessibility_beyond_selected_anchor', 'user_task_success', 'production_readiness'] };
 }
