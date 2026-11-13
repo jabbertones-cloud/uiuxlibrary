@@ -17,10 +17,12 @@ export function registerNativeTranslationTools(server, workspace) {
   server.registerTool('uiux_native_translate', {
     description: 'Produce local Apple Translation candidates for UI keys; never claims native approval or modifies catalogs.',
     inputSchema: z.object({ sourceLocale: z.string().default('en'), targetLocale: z.string(),
-      texts: z.record(z.string(), z.string()), protectedTerms: z.array(z.string()).default([]) })
+      texts: z.record(z.string(), z.string()), protectedTerms: z.array(z.string()).default([]),
+      engine: z.enum(['apple', 'ollama']).default('apple'), model: z.string().optional() })
   }, async a => result(() => withInput({ source_locale: a.sourceLocale, target_locale: a.targetLocale,
     texts: a.texts, protected_terms: a.protectedTerms },
-    file => nativeRun('localization', ['translate', '--input', file]))));
+    file => nativeRun('localization', [a.engine === 'ollama' ? 'ollama' : 'translate', '--input', file,
+      ...(a.engine === 'ollama' && a.model ? ['--model', a.model] : [])]))));
   server.registerTool('uiux_native_apply_translations', {
     description: 'Explicitly write key-mapped UI translations to a registered .xcstrings catalog, marked needsReview. Never approves release.',
     inputSchema: z.object({ catalog: z.string().min(1), translations: z.record(z.string(), z.record(z.string(), z.string())),

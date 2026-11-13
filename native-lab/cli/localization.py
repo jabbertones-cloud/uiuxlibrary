@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "vendor"))
 from lib import xcstrings, pseudolocalization  # noqa: E402
+from babelfish_translate_catalog import ask as ollama_ask  # noqa: E402
+from urllib.error import HTTPError, URLError
 
 
 def translation(input_path: str) -> dict:
@@ -31,23 +33,57 @@ def translation(input_path: str) -> dict:
     return result
 
 
+def ollama_translation(input_path: str, model: str, timeout: int) -> dict:
+    payload = json.loads(Path(input_path).read_text())
+    if payload.get("source_locale", "en").split("-")[0] != "en":
+        raise ValueError("BabelFish donor only supports English source strings")
+    locale = payload["target_locale"]
+    texts = payload["texts"]
+    if not isinstance(texts, dict) or not texts or len(texts) > 5:
+        raise ValueError("Local translation requires 1 to 5 source strings per request")
+    items = [(key, locale, source) for key, source in texts.items()]
+    try:
+        results = ollama_ask("http://127.0.0.1:11434", model, locale, items, timeout)
+    except (HTTPError, URLError, TimeoutError, OSError, ValueError) as exc:
+        return {"status": "unavailable", "engine": "ollama_local",
+                "model": model, "target_locale": locale, "approved": False,
+                "translations": {}, "error": str(exc)[:300]}
+    terms = payload.get("protected_terms") or []
+    accepted, rejected = {}, {}
+    for key, source in texts.items():
+        candidate = results.get(source) or results.get(key)
+        if not isinstance(candidate, str) or not candidate.strip():
+            rejected[key] = "no_candidate"
+        elif xcstrings.check_placeholder_parity(source, candidate):
+            rejected[key] = "placeholder_mismatch"
+        elif any(t in source and t not in candidate for t in terms):
+            rejected[key] = "protected_term_mismatch"
+        else:
+            accepted[key] = candidate.strip()
+    return {"status": "candidate" if len(accepted) == len(texts) else "partial",
+            "engine": "ollama_local", "model": model, "target_locale": locale,
+            "approved": False, "translations": accepted, "rejected": rejected}
+
+
 def main() -> int:
     p = argparse.ArgumentParser()
-    p.add_argument("action", choices=["status", "manifest", "gate", "pseudo", "translate", "apply"])
+    p.add_argument("action", choices=["status", "manifest", "gate", "pseudo", "translate", "ollama", "apply"])
     p.add_argument("--catalog")
     p.add_argument("--config", default=str(ROOT / "localization.json"))
     p.add_argument("--locale")
     p.add_argument("--input")
     p.add_argument("--confirm", action="store_true")
+    p.add_argument("--model", default="qwen3.5:4b")
+    p.add_argument("--timeout", type=int, default=60)
     args = p.parse_args()
     try:
         xcstrings._CONFIG_PATH = Path(args.config).resolve()
         if args.action == "pseudo":
             result = pseudolocalization.plan()
-        elif args.action == "translate":
+        elif args.action in ("translate", "ollama"):
             if not args.input:
-                raise ValueError("translation requires --input JSON (no remote LLM used)")
-            result = translation(args.input)
+                raise ValueError("translation requires --input JSON")
+            result = translation(args.input) if args.action == "translate" else ollama_translation(args.input, args.model, args.timeout)
         else:
             if not args.catalog or not Path(args.catalog).is_file():
                 raise ValueError("provide a real .xcstrings catalog file")

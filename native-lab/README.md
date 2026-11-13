@@ -22,7 +22,7 @@ A route, nonblank PNG and hash are capture evidence only. If simctl emits an alp
     npm run native:locale -- pseudo
     npm run native:locale -- translate --input /path/to/request.json
 
-The local Apple Translation adapter accepts JSON with source_locale, target_locale, texts map and protected_terms array. It returns candidates with approved:false; unsupported or undownloaded language models are reported rather than fabricated. Catalog changes use apply --catalog ... --input ... --confirm and always mark new strings needsReview. Placeholder mismatches are rejected; no autonomous approval or localization release occurs.
+The local Apple Translation adapter accepts JSON with source_locale, target_locale, texts map and protected_terms array. The alternative local Ollama adapter uses a single-locale, five-string maximum batch with an installed model such as qwen3.5:4b. It is candidate-only and cannot mark strings approved. It returns candidates with approved:false; unsupported or undownloaded language models are reported rather than fabricated. Catalog changes use apply --catalog ... --input ... --confirm and always mark new strings needsReview. Placeholder mismatches are rejected; no autonomous approval or localization release occurs.
 
 ## MCP setup and boundaries
 
@@ -30,7 +30,7 @@ Run the existing MCP server from Interface Lab on a trusted Mac with UIUX_NATIVE
 
 ## Donor provenance and limitations
 
-Internal donor: jabbertones-cloud/LocalizeShots local checkout 0edf775e80508f184fda398b0de5093e45ff2787. Files: Vendor/aiscent-executor/c6b2b04/capture_sim.py, lib/{capture_plan,sims,locales,quality,state,sim_target_proof,plan_yaml,xcstrings,placeholders,pseudolocalization}.py, scripts/apple-translate-json.swift. Donor files retained verbatim except for adapter code in native-lab/cli/. Source identities are recorded in git; do not export this bundle to unrelated projects without ownership/license review. Apple's documented native simctl and Translation APIs are runtime authorities.
+Internal donor: jabbertones-cloud/LocalizeShots local checkout 0edf775e80508f184fda398b0de5093e45ff2787. Files: Vendor/aiscent-executor/c6b2b04/capture_sim.py, lib/{capture_plan,sims,locales,quality,state,sim_target_proof,plan_yaml,xcstrings,placeholders,pseudolocalization}.py, scripts/apple-translate-json.swift; BabelFish donor jabbertones-cloud/aiscent-mcp commit 88b441bce33b82064ea13f87c47300cdf0ea252c, fleet-server/babelfish_translate_catalog.py. LocalizeShots donor files are retained verbatim. The BabelFish ask adapter is pinned to local Ollama and bounded to nonthinking 256-token replies; its catalog-writing main routine is never invoked. Integration glue lives in native-lab/cli/. Source identities are recorded in git; do not export this bundle to unrelated projects without ownership/license review. Apple's documented native simctl and Translation APIs are runtime authorities.
 
 Known limitations: XCUITest screen-anchor proof is not yet implemented; source strings do not guarantee visible localization; no AI-generated translation is approved without native review; only iOS/iPad simulator and XCStrings are integrated in this phase. TestFlight device testing, macOS window capture, marketing graphics and ASC submission remain separate. Interface Lab npm run verify is a structural check only, not end-user acceptance.
 
