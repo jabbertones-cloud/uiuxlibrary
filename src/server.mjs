@@ -10,6 +10,7 @@ import { assessReceipt, withinWorkspace } from './receipt-gate.mjs';
 import { auditPage } from './browser-adapter.mjs';
 import { diffScreenshots } from './screenshot-diff.mjs';
 import { judgeNativeCapture } from './native-judge.mjs';
+import { compareNativeAudits } from './native-audit-diff.mjs';
 import { testStagingFlow } from './flow-adapter.mjs';
 import { registerNativeTools } from './native-tools.mjs';
 import { registerNativeTranslationTools } from './native-translation-tools.mjs';
@@ -58,6 +59,18 @@ function createServer() {
       const payload = judgeNativeCapture(readProjectJson(capture), readProjectJson(plan),
         workspace, review ? readProjectJson(review) : undefined);
       return output(payload);
+    } catch (e) { return held(e); }
+  });
+  server.registerTool('uiux_compare_native_audits', {
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    description: 'Compare two verified AiSCent native captures with Apple audit findings, fail on any worsened category even if total decreases. Not a UX rating.',
+    inputSchema: z.object({ beforeCapture: z.string().min(1), afterCapture: z.string().min(1), plan: z.string().min(1) })
+  }, async ({ beforeCapture, afterCapture, plan }) => {
+    try {
+      const spec = readProjectJson(plan);
+      const before = judgeNativeCapture(readProjectJson(beforeCapture), spec, workspace);
+      const after = judgeNativeCapture(readProjectJson(afterCapture), spec, workspace);
+      return output(compareNativeAudits(before, after));
     } catch (e) { return held(e); }
   });
   server.registerTool('uiux_test_staging_flow', {

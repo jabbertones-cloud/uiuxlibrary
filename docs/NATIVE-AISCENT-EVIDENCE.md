@@ -104,3 +104,17 @@ then emits issueLocations with their capture cell. Invalid coordinate receipts
 make accessibilityAudit UNVERIFIED; absent positions leave the original category
 counts intact. Locations indicate what Apple flagged, not independently proved
 failure causes or a human usability score.
+
+## Comparing repeated native captures
+
+The read-only uiux_compare_native_audits MCP tool takes two AiSCent capture
+receipts plus the same explicit capture plan. It re-runs the existing native
+identity, screenshot SHA, pixel-content, matrix and Apple-audit gates for both.
+If any audit category worsens, it returns CATEGORY_REGRESSION, even if the
+total number of findings falls. Identical PNG bytes and incompatible screen
+matrices are held, and neither result is an overall usability score.
+
+EzSeller iPhone 16e dogfood, Nov. 13: A(15 findings) to B(14) regressed
+clipped text and hit-region categories; B(14) to C(12) introduced no new
+category count regression. Independent TestFlight-binary identity and human
+task completion remain unverified.
