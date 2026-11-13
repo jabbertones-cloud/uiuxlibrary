@@ -1,0 +1,12 @@
+{
+  "schema": "smat-interface-lab/screens-v1",
+  "bundleId": "com.smatdesigns.ezseller",
+  "urlScheme": "ezseller",
+  "screens": [
+    {"id":"today","label":"Today overview","deepLink":"ezseller://today","anchor":"desk.today"},
+    {"id":"orders","label":"Orders","deepLink":"ezseller://orders","anchor":"desk.orders.queue"},
+    {"id":"products","label":"Products and inventory","deepLink":"ezseller://products","anchor":"desk.products"},
+    {"id":"money","label":"Money and reimbursements","deepLink":"ezseller://money","anchor":"desk.money"},
+    {"id":"inbox","label":"Approvals and follow-up","deepLink":"ezseller://inbox","anchor":"desk.inbox"}
+  ]
+}

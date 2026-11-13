@@ -12,9 +12,15 @@
   },
   "scripts": {
     "mcp": "node src/server.mjs",
-    "check": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs",
+    "check": "npm run check:js && npm run check:native",
     "audit:tokens": "node src/cli.mjs tokens design-system/tokens.json",
-    "verify": "npm run check && npm test && npm run test:runtime"
+    "verify": "npm run check && npm run audit:tokens",
+    "native:list": "python3 native-lab/cli/simulator.py list",
+    "native:screens": "python3 native-lab/cli/simulator.py screens",
+    "native:capture": "python3 native-lab/cli/simulator.py capture",
+    "native:locale": "python3 native-lab/cli/localization.py",
+    "check:js": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs && node --check src/native-exec.mjs && node --check src/native-tools.mjs && node --check src/native-translation-tools.mjs",
+    "check:native": "python3 -m compileall -q native-lab/cli native-lab/vendor"
   },
   "dependencies": {
     "@axe-core/playwright": "4.14.0",

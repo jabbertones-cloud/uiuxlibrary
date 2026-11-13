@@ -1,0 +1,8 @@
+{
+  "catalog": "Localizable.xcstrings",
+  "source_language": "en",
+  "asc_locales": ["en","en-GB","en-AU","en-CA","fr-FR","fr-CA","de-DE","es-ES","es-MX","pt-BR","pt-PT","it","nl-NL","sv","no","da","fi","pl","tr","cs","sk","hu","ro","hr","uk","el","ca","ru","ja","ko","zh-Hans","zh-Hant","th","vi","id","ms","hi","ar-SA","he"],
+  "asc_to_xcode": {"fr-FR":"fr","de-DE":"de","es-ES":"es","nl-NL":"nl","no":"nb"},
+  "brand_terms_do_not_translate": ["App Store","TestFlight","Xcode"],
+  "placeholder_denylist_patterns": ["^[A-Z0-9]{8,12}$","^https?://","^[0-9\\s%/().,:x+-]*$"]
+}

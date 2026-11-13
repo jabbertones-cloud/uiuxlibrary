@@ -10,6 +10,8 @@ import { assessReceipt, withinWorkspace } from './receipt-gate.mjs';
 import { auditPage } from './browser-adapter.mjs';
 import { diffScreenshots } from './screenshot-diff.mjs';
 import { testStagingFlow } from './flow-adapter.mjs';
+import { registerNativeTools } from './native-tools.mjs';
+import { registerNativeTranslationTools } from './native-translation-tools.mjs';
 
 const workspace = resolve(process.env.UIUX_WORKSPACE || process.cwd());
 const output = obj => ({ content: [{ type: 'text', text: JSON.stringify(obj, null, 2) }] });
@@ -66,6 +68,8 @@ function createServer() {
     description: 'Read pinned research-only donor catalogue with licenses, source refs, and adoption caveats. Does not invoke donors.',
     inputSchema: z.object({})
   }, async () => output(JSON.parse(readFileSync(new URL('../docs/donors.json', import.meta.url), 'utf8'))));
+  registerNativeTools(server, workspace);
+  registerNativeTranslationTools(server, workspace);
   return server;
 }
 
