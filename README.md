@@ -37,6 +37,29 @@ Configure your MCP host to launch Node with this absolute `server.mjs` path and 
 
 `uiux_audit_page` captures three viewports and runs axe WCAG-tagged automated rules. It **does not** verify all keyboard behaviors, user task success, or visual quality. Review all screenshots as actual artifact evidence.
 
+## Native iPhone, iPad and Mac evidence via AiSCent God Mode
+
+The same stdio server exposes `uiux_review_aiscent_native`, a read-only
+AiSCent capture-plan reviewer. This is **not** a simulator driver and it never
+calls physical devices. AiSCent God Mode on the M2 is responsible for all
+captures. The reviewer verifies screen identity, screenshot hashes, complete
+locale/device/section matrices and six-axis **reviewer-reported** ratings.
+Missing images, bad hashes, missing XCUITest proof and current Mac window-only
+captures return HOLD, never a guessed UI rating.
+
+For standalone readback, with the capture results and plan copied inside the
+workspace:
+
+```sh
+node src/cli.mjs native .uiux-evidence/aiscent-capture.json examples/ezseller-ios-ipad-capture-plan.json
+```
+
+See [the native capture contract](docs/NATIVE-AISCENT-EVIDENCE.md) and the
+EzSeller [iOS/iPad](examples/ezseller-ios-ipad-capture-plan.json) and
+[Mac](examples/ezseller-macos-capture-plan.json) plans. Source syntax checks
+are not acceptance tests; an actual AiSCent screenshot evidence receipt and
+human UX review are required before any design-improvement claim.
+
 ## Quality contract
 
 Read [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/SECURITY.md](docs/SECURITY.md). Reuse donor tools according to [docs/DONORS.md](docs/DONORS.md); entries are researched candidates, not a guarantee that installation or runtime tests succeeded.

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.smatdesigns.ezseller" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 18 Pro", "iPad Pro 13-inch (M5)", "iPad mini (A20 Pro)"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=light"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-today", "reach": {}, "launch_args": ["--section=today"], "wait_for": "today.hero", "timeout_s": 30 },
+    { "name": "02-orders", "reach": {}, "launch_args": ["--section=orders"], "wait_for": "orders.filter", "timeout_s": 30 },
+    { "name": "03-products", "reach": {}, "launch_args": ["--section=products"], "wait_for": "desk.products", "timeout_s": 30 },
+    { "name": "04-money", "reach": {}, "launch_args": ["--section=money"], "wait_for": "desk.money", "timeout_s": 30 },
+    { "name": "05-inbox", "reach": {}, "launch_args": ["--section=inbox"], "wait_for": "inbox.severity", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}

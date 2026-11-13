@@ -15,6 +15,7 @@ async function withInput(body, fn) {
 }
 export function registerNativeTranslationTools(server, workspace) {
   server.registerTool('uiux_native_translate', {
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     description: 'Produce local Apple Translation candidates for UI keys; never claims native approval or modifies catalogs.',
     inputSchema: z.object({ sourceLocale: z.string().default('en'), targetLocale: z.string(),
       texts: z.record(z.string(), z.string()), protectedTerms: z.array(z.string()).default([]),
@@ -24,6 +25,7 @@ export function registerNativeTranslationTools(server, workspace) {
     file => nativeRun('localization', [a.engine === 'ollama' ? 'ollama' : 'translate', '--input', file,
       ...(a.engine === 'ollama' && a.model ? ['--model', a.model] : [])]))));
   server.registerTool('uiux_native_apply_translations', {
+    annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false },
     description: 'Explicitly write key-mapped UI translations to a registered .xcstrings catalog, marked needsReview. Never approves release.',
     inputSchema: z.object({ catalog: z.string().min(1), translations: z.record(z.string(), z.record(z.string(), z.string())),
       confirm: z.literal(true) })
