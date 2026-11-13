@@ -4,7 +4,7 @@ Independent of AiSCent. This is a scoped port of SMAT-owned LocalizeShots primit
 
 ## Native screen selector
 
-The screen catalog maps choices to routes exposed by the target app. Screens cannot be discovered or proved from URL schemes alone. uiux_native_screens lists the choices, uiux_native_simulators enumerates actual Mac simulator runtimes, and uiux_native_capture takes a chosen screen, simulator, locale, and optional display UUID. Multi-display targets (including iPhone Duo) require an explicit powered-on display identifier.
+The screen catalog maps choices to existing launch arguments (preferred) or app-owned deep links. EzSeller sample screens use --review-demo --section=NAME, so they intentionally render review data, not a live Amazon account. Screens cannot be discovered or proved from URL schemes alone. uiux_native_screens lists the choices, uiux_native_simulators enumerates actual Mac simulator runtimes, and uiux_native_capture takes a chosen screen, simulator, locale, and optional display UUID. Multi-display targets (including iPhone Duo) require an explicit powered-on display identifier.
 
 Example on a Mac with EzSeller installed in a booted simulator:
 
@@ -12,7 +12,7 @@ Example on a Mac with EzSeller installed in a booted simulator:
     npm run native:screens -- --screens-file native-lab/examples/ezseller-screens.json
     npm run native:capture -- --screens-file native-lab/examples/ezseller-screens.json --screen orders --device EzSellerHF1382 --locale en-US --output .uiux-evidence/native/ezseller-orders.png
 
-A route, nonblank PNG and hash are capture evidence only. The output deliberately says CAPTURED_SCREEN_IDENTITY_UNVERIFIED until an accessibility/XCUITest anchor proves the requested view appeared. The locale is passed as an application launch argument; it is not proof the entire simulator OS is in that locale. Simulators must have matching installed iOS/iPad apps; device-signed IPAs are not simulator apps. For Duo, list the live displays after each pose change.
+A route, nonblank PNG and hash are capture evidence only. If simctl emits an alpha PNG, the original is preserved and a separate non-alpha copy is validated through the retained LocalizeShots quality donor. The output deliberately says CAPTURED_SCREEN_IDENTITY_UNVERIFIED until an accessibility/XCUITest anchor proves the requested view appeared. The locale is passed as an application launch argument; it is not proof the entire simulator OS is in that locale. Simulators must have matching installed iOS/iPad apps; device-signed IPAs are not simulator apps. For Duo, list the live displays after each pose change.
 
 ## Localization
 

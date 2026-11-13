@@ -4,7 +4,7 @@ Source donors: LocalizeShots capture_sim.py, capture_plan.py, sim_target_proof.p
 Never installs apps, changes OS permissions, or calls AiSCent/ASC.
 """
 from __future__ import annotations
-import argparse, json, plistlib, re, subprocess, sys
+import argparse, json, plistlib, re, shutil, subprocess, sys
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -54,8 +54,11 @@ def screen_config(file: str, screen: str) -> tuple[dict, dict]:
         raise ValueError(f"unknown or ambiguous screen {screen!r}")
     shot = matches[0]
     link = shot.get("deepLink", "")
-    if not link or urlsplit(link).scheme != config.get("urlScheme"):
-        raise ValueError("screen route must use the catalog's explicit app URL scheme")
+    args = shot.get("launchArgs")
+    has_args = isinstance(args, list) and bool(args) and all(isinstance(x, str) and x.startswith("--") for x in args)
+    has_link = bool(link) and urlsplit(link).scheme == config.get("urlScheme")
+    if not (has_args or has_link):
+        raise ValueError("screen requires launchArgs or an app-owned deepLink")
     return config, shot
 
 
@@ -65,7 +68,11 @@ def checked_screen(config: dict, shot: dict, device: str, locale: str) -> None:
             "shots": [{"name": "01-" + shot["id"], "reach": {"deep_link": shot["deepLink"]},
                        "wait_for": shot.get("anchor", "screen.root"), "timeout_s": 12}],
             "seed": {}, "modes": {"dry_run": False}}
-    problems = capture_plan.validate(plan)
+    problems = capture_plan.validate(plan) if shot.get("deepLink") else []
+    if not capture_plan.BUNDLE_RE.fullmatch(config["bundleId"]):
+        problems.append("Invalid application bundle identifier")
+    if not capture_plan.SHOT_NAME_RE.fullmatch("01-" + shot["id"]):
+        problems.append("Invalid screen id")
     if problems:
         raise ValueError("; ".join(problems))
 
@@ -98,9 +105,12 @@ def capture(args: argparse.Namespace) -> dict:
                 "screen": shot["id"], "locale": args.locale,
                 "device": target["name"], "displays": ports}
     _, language, apple_locale, _, _, _ = locale_tuple
+    launch_args = shot.get("launchArgs", [])
     cmd("launch", "--terminate-running-process", target["udid"], config["bundleId"],
-        "-AppleLanguages", f"({language})", "-AppleLocale", apple_locale, timeout=45)
-    cmd("openurl", target["udid"], shot["deepLink"].replace("{locale}", args.locale))
+        "-AppleLanguages", f"({language})", "-AppleLocale", apple_locale,
+        *launch_args, timeout=45)
+    if not launch_args:
+        cmd("openurl", target["udid"], shot["deepLink"].replace("{locale}", args.locale))
     settled, wait_ms = wait_for_settle(target["udid"], 12)
     out = Path(args.output).resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -109,15 +119,24 @@ def capture(args: argparse.Namespace) -> dict:
         io += ["--display=" + args.display]
     cmd(*io, str(out), timeout=35)
     width, height = quality.get_dimensions(out)
+    raw = None
+    if quality.has_alpha(out):
+        raw = out.with_name(out.stem + ".raw.png")
+        shutil.copyfile(out, raw)
+        quality.strip_alpha(out)
     qa = quality.check(out, width, height)
     return {"status": "CAPTURED_SCREEN_IDENTITY_UNVERIFIED" if qa.ok else "FAIL_CAPTURE_QA",
             "app": config["bundleId"], "appVersion": info.get("CFBundleShortVersionString"),
             "build": info.get("CFBundleVersion"), "requestedScreen": shot["id"],
             "requestedAnchor": shot.get("anchor"), "screenIdentityVerified": False,
+            "navigationMethod": "launch_arguments" if launch_args else "deep_link",
+            "dataMode": "review_demo" if "--review-demo" in launch_args else "unverified",
             "locale": args.locale, "localeScope": "app_launch_arguments_only",
             "device": target["name"], "udid": target["udid"], "display": args.display or ports[0],
             "settled": settled, "settleMs": wait_ms, "png": str(out),
             "sha256": quality.sha256_of(out), "size": [width, height],
+            "originalAlphaPng": str(raw) if raw else None,
+            "originalSha256": quality.sha256_of(raw) if raw else None,
             "qa": {"ok": qa.ok, "reason": qa.reason},
             "note": "A route and PNG do not prove that the requested view is visible; confirm with accessibility/XCUITest."}
 

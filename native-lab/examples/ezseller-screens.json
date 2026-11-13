@@ -3,10 +3,55 @@
   "bundleId": "com.smatdesigns.ezseller",
   "urlScheme": "ezseller",
   "screens": [
-    {"id":"today","label":"Today overview","deepLink":"ezseller://today","anchor":"desk.today"},
-    {"id":"orders","label":"Orders","deepLink":"ezseller://orders","anchor":"desk.orders.queue"},
-    {"id":"products","label":"Products and inventory","deepLink":"ezseller://products","anchor":"desk.products"},
-    {"id":"money","label":"Money and reimbursements","deepLink":"ezseller://money","anchor":"desk.money"},
-    {"id":"inbox","label":"Approvals and follow-up","deepLink":"ezseller://inbox","anchor":"desk.inbox"}
+    {
+      "id": "today",
+      "label": "Today overview",
+      "deepLink": "ezseller://today",
+      "anchor": "desk.today",
+      "launchArgs": [
+        "--review-demo",
+        "--section=today"
+      ]
+    },
+    {
+      "id": "orders",
+      "label": "Orders",
+      "deepLink": "ezseller://orders",
+      "anchor": "desk.orders.queue",
+      "launchArgs": [
+        "--review-demo",
+        "--section=orders"
+      ]
+    },
+    {
+      "id": "products",
+      "label": "Products and inventory",
+      "deepLink": "ezseller://products",
+      "anchor": "desk.products",
+      "launchArgs": [
+        "--review-demo",
+        "--section=products"
+      ]
+    },
+    {
+      "id": "money",
+      "label": "Money and reimbursements",
+      "deepLink": "ezseller://money",
+      "anchor": "desk.money",
+      "launchArgs": [
+        "--review-demo",
+        "--section=money"
+      ]
+    },
+    {
+      "id": "inbox",
+      "label": "Approvals and follow-up",
+      "deepLink": "ezseller://inbox",
+      "anchor": "desk.inbox",
+      "launchArgs": [
+        "--review-demo",
+        "--section=inbox"
+      ]
+    }
   ]
 }
