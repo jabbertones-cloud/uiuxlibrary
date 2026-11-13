@@ -94,3 +94,13 @@ required_visible_ids: [banner.reviewDemo]. The native XCTest capture must
 prove those accessibility identifiers are visibly hittable with nonblank
 labels in the same witness as the page anchor. Interface Lab rejects missing,
 wrong, duplicate, or hidden elements before scoring. No UI score is inferred.
+
+## Where Apple found issues (when provided)
+
+The optional audit's bounded element positions are expressed in iOS screen points
+and are kept separate from the screenshot trust and UX rating. The judge verifies
+known issue kinds, bounded integer rectangles, element roles, and no text labels,
+then emits issueLocations with their capture cell. Invalid coordinate receipts
+make accessibilityAudit UNVERIFIED; absent positions leave the original category
+counts intact. Locations indicate what Apple flagged, not independently proved
+failure causes or a human usability score.
