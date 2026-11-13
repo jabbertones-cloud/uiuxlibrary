@@ -23,7 +23,8 @@
     "check:native": "python3 -m compileall -q native-lab/cli native-lab/vendor",
     "native:displays": "python3 native-lab/cli/simulator.py displays",
     "test:native-visual": "node --test tests/native-visual.test.mjs",
-    "test:native-accessibility": "node --test tests/native-accessibility.test.mjs"
+    "test:native-accessibility": "node --test tests/native-accessibility.test.mjs",
+    "test:native-visible": "node --test tests/native-visible.test.mjs"
   },
   "dependencies": {
     "@axe-core/playwright": "4.14.0",

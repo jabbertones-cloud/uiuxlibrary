@@ -86,3 +86,11 @@ reported as accessibility passes. A zero-issue audit still cannot prove
 VoiceOver workflows or full accessibility. No seller labels or PII are
 required in the aggregate. Primary donor: Apple
 XCUIApplication.performAccessibilityAudit (WWDC23 session 10035).
+
+## Secondary on-screen content proof
+
+For screenshot marketing or high-risk UI, a plan shot may specify
+required_visible_ids: [banner.reviewDemo]. The native XCTest capture must
+prove those accessibility identifiers are visibly hittable with nonblank
+labels in the same witness as the page anchor. Interface Lab rejects missing,
+wrong, duplicate, or hidden elements before scoring. No UI score is inferred.

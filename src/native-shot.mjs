@@ -18,6 +18,13 @@ export function checkNativeShot(row, cell, root) {
       JSON.stringify(witness.tap_steps) !== JSON.stringify(cell.tap_steps) ||
       (cell.element_type && witness.element_type !== cell.element_type))
     return { ok: false, reason: 'XCUITEST_WITNESS_BINDING_INVALID' };
+  const required = cell.required_visible_ids || [];
+  const visible = witness.visible_requirements || [];
+  if (!Array.isArray(visible) || visible.length !== required.length ||
+      required.some((id, i) => visible[i]?.identifier !== id ||
+        visible[i]?.hittable !== true ||
+        typeof visible[i]?.label !== 'string' || !visible[i].label.trim()))
+    return { ok: false, reason: 'XCUITEST_REQUIRED_VISIBLE_ELEMENT_MISSING' };
   if (row.destination_verified !== true)
     return { ok: false, reason: 'SCREEN_DESTINATION_UNVERIFIED' };
   const image = verifyNativePng(row, root);
