@@ -11,6 +11,10 @@ export function registerNativeTools(server, workspace) {
     description: 'List real installed Apple simulators (read-only; no AiSCent).',
     inputSchema: z.object({})
   }, async () => wrap(() => nativeRun('simulator', ['list'])));
+  server.registerTool('uiux_native_displays', {
+    description: 'Enumerate actual powered-on display UUIDs and pixel sizes for a chosen simulator, including Duo.',
+    inputSchema: z.object({ simulator: z.string().min(1) })
+  }, async ({ simulator }) => wrap(() => nativeRun('simulator', ['displays', '--device', simulator])));
   server.registerTool('uiux_native_screens', {
     description: 'List screen IDs in an app-specific Interface Lab route catalog.',
     inputSchema: z.object({ screensFile: z.string().min(1) })

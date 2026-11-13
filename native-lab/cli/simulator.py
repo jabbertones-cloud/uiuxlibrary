@@ -35,14 +35,23 @@ def selected_device(device: str) -> dict:
     return options[0]
 
 
+def display_ports(udid: str) -> list[dict]:
+    blocks = cmd("io", udid, "enumerate").split("Port:")[1:]
+    displays = []
+    for block in blocks:
+        fields = dict(line.split(":", 1) for row in block.splitlines()
+                      if ":" in (line := row.strip()))
+        if (fields.get("Class", "").strip() == "Display" and
+            fields.get("Power state", "").strip() == "On" and
+            fields.get("Display class", "").strip() == "0"):
+            displays.append({"uuid": fields["UUID"].strip(),
+                             "width": int(fields["Default width"].strip()),
+                             "height": int(fields["Default height"].strip())})
+    return displays
+
+
 def active_ports(udid: str) -> list[str]:
-    text = cmd("io", udid, "enumerate")
-    blocks = text.split("Port:")[1:]
-    return [re.search(r"(?m)^\s*UUID:\s*([0-9A-Fa-f-]{36})", block).group(1)
-            for block in blocks if "Class: Display" in block
-            and "Power state: On" in block
-            and "Display class: 0" in block
-            and re.search(r"(?m)^\s*UUID:\s*([0-9A-Fa-f-]{36})", block)]
+    return [port["uuid"] for port in display_ports(udid)]
 
 
 def screen_config(file: str, screen: str) -> tuple[dict, dict]:
@@ -143,7 +152,7 @@ def capture(args: argparse.Namespace) -> dict:
 
 def main() -> int:
     p = argparse.ArgumentParser()
-    p.add_argument("action", choices=["list", "screens", "capture"])
+    p.add_argument("action", choices=["list", "screens", "displays", "capture"])
     p.add_argument("--screens-file")
     p.add_argument("--screen")
     p.add_argument("--locale", default="en-US")
@@ -155,6 +164,14 @@ def main() -> int:
     try:
         if a.action == "list":
             result = {"status": "OK", "devices": inventory()}
+        elif a.action == "displays":
+            if not a.device:
+                raise ValueError("specify --device to discover live display ports")
+            dev = selected_device(a.device)
+            if dev.get("state") != "Booted":
+                raise ValueError("simulator must be booted for display enumeration")
+            result = {"status": "OK", "simulator": dev["name"],
+                      "displays": display_ports(dev["udid"])}
         elif a.action == "screens":
             cat = json.loads(Path(a.screens_file).read_text())
             result = {"status": "OK", "bundleId": cat["bundleId"], "screens": cat["screens"]}

@@ -92,8 +92,11 @@ def main() -> int:
             if args.action == "status":
                 result = xcstrings.localize_status(args.catalog)
             elif args.action == "manifest":
+                cfg = json.loads(Path(args.config).read_text())
+                canonical = cfg.get("asc_to_xcode", {}).get(args.locale, args.locale)
                 result = xcstrings.localize_manifest(args.catalog,
-                           locales=[args.locale] if args.locale else None)
+                           locales=[canonical] if args.locale else None)
+                result["requested_locale"] = args.locale
             elif args.action == "gate":
                 result = xcstrings.localize_release_gate(args.catalog,
                            locales=[args.locale] if args.locale else None)
@@ -101,8 +104,19 @@ def main() -> int:
                 if not args.confirm or not args.input:
                     raise ValueError("apply requires --confirm and a keyed JSON input")
                 changes = json.loads(Path(args.input).read_text())
-                result = xcstrings.localize_apply(args.catalog, changes, review_required=True)
-                result["status"] = "NEEDS_NATIVE_REVIEW"
+                cfg = json.loads(Path(args.config).read_text())
+                aliases = cfg.get("asc_to_xcode", {})
+                allowed = set(xcstrings._xcode_locales(cfg))
+                mapped = {}
+                for requested, values in changes.items():
+                    locale = aliases.get(requested, requested)
+                    if locale not in allowed or locale == cfg["source_language"]:
+                        raise ValueError("Unsupported translation target locale: " + requested)
+                    mapped.setdefault(locale, {}).update(values)
+                result = xcstrings.localize_apply(args.catalog, mapped, review_required=True)
+                result["status"] = ("HOLD_REJECTED" if result.get("rejected_placeholder_mismatch")
+                                    else "NEEDS_NATIVE_REVIEW" if result.get("written")
+                                    else "HOLD_NO_CHANGES")
         print(json.dumps(result, ensure_ascii=False))
         return 0
     except Exception as exc:

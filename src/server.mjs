@@ -22,7 +22,7 @@ function readProjectJson(file) {
 }
 
 function createServer() {
-  const server = new McpServer({ name: 'smat-interface-lab', version: '0.2.0' });
+  const server = new McpServer({ name: 'smat-interface-lab', version: '0.3.0' });
   server.registerTool('uiux_audit_tokens', {
     description: 'Read DTCG tokens and enforce SMAT 3-tier reference policy. Structural only; not WCAG contrast.',
     inputSchema: z.object({ file: z.string().min(1) })

@@ -4,7 +4,7 @@ Independent of AiSCent. This is a scoped port of SMAT-owned LocalizeShots primit
 
 ## Native screen selector
 
-The screen catalog maps choices to existing launch arguments (preferred) or app-owned deep links. EzSeller sample screens use --review-demo --section=NAME, so they intentionally render review data, not a live Amazon account. Screens cannot be discovered or proved from URL schemes alone. uiux_native_screens lists the choices, uiux_native_simulators enumerates actual Mac simulator runtimes, and uiux_native_capture takes a chosen screen, simulator, locale, and optional display UUID. Multi-display targets (including iPhone Duo) require an explicit powered-on display identifier.
+The screen catalog maps choices to existing launch arguments (preferred) or app-owned deep links. EzSeller sample screens use --review-demo --section=NAME, so they intentionally render review data, not a live Amazon account. Screens cannot be discovered or proved from URL schemes alone. uiux_native_screens lists the choices, uiux_native_simulators enumerates actual Mac simulator runtimes, uiux_native_displays lists exact powered-on display UUIDs and pixel dimensions, and uiux_native_capture takes a chosen screen, simulator, locale, and optional display UUID. Multi-display targets (including iPhone Duo) require an explicit powered-on display identifier.
 
 Example on a Mac with EzSeller installed in a booted simulator:
 
@@ -22,7 +22,7 @@ A route, nonblank PNG and hash are capture evidence only. If simctl emits an alp
     npm run native:locale -- pseudo
     npm run native:locale -- translate --input /path/to/request.json
 
-The local Apple Translation adapter accepts JSON with source_locale, target_locale, texts map and protected_terms array. The alternative local Ollama adapter uses a single-locale, five-string maximum batch with an installed model such as qwen3.5:4b. It is candidate-only and cannot mark strings approved. It returns candidates with approved:false; unsupported or undownloaded language models are reported rather than fabricated. Catalog changes use apply --catalog ... --input ... --confirm and always mark new strings needsReview. Placeholder mismatches are rejected; no autonomous approval or localization release occurs.
+The local Apple Translation adapter accepts JSON with source_locale, target_locale, texts map and protected_terms array. The alternative local Ollama adapter uses a single-locale, five-string maximum batch with an installed model such as qwen3.5:4b. It is candidate-only and cannot mark strings approved. It returns candidates with approved:false; unsupported or undownloaded language models are reported rather than fabricated. ASC locale names such as fr-FR are mapped to their actual Xcode Catalog keys before worklists and writes. Catalog changes use apply --catalog ... --input ... --confirm and always mark new strings needsReview. Placeholder mismatches are rejected; no autonomous approval or localization release occurs.
 
 ## MCP setup and boundaries
 
