@@ -31,7 +31,7 @@ function createServer() {
     catch (e) { return held(e); }
   });
   server.registerTool('uiux_audit_page', {
-    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     description: 'Sample five real browser viewports with Playwright + axe, screenshot hashes and actionable failures. Requires exact UIUX_ALLOW_ORIGINS. Automated only.',
     inputSchema: z.object({ url: z.url(), theme: z.enum(['light', 'dark']).default('light') })
   }, async ({ url, theme }) => {
