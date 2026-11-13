@@ -73,3 +73,16 @@ No verified screenshot = no visual score. No independent customer task evidence
 = no completion claim. Code compiled or a PR merged != TestFlight deployment.
 Require exact source/binary/version, native runtime capture, AX witness, screenshot
 hashes, visual review, user task replay, merge, TestFlight reread and live acceptance.
+
+## Native accessibility audit receipts (opt-in)
+
+AiSCent plan modes.audit_accessibility: true requests Apple XCTest contrast,
+hit-region, clipped-text and element-description checks for each native
+iPhone/iPad screenshot. Interface Lab reads only the result in the validated
+XCTest witness, aggregates category counts and exposes accessibilityAudit
+separately from image verification and user task ratings. Absent, failed,
+partial or malformed audits are NOT_RUN / UNVERIFIED / PARTIAL, never
+reported as accessibility passes. A zero-issue audit still cannot prove
+VoiceOver workflows or full accessibility. No seller labels or PII are
+required in the aggregate. Primary donor: Apple
+XCUIApplication.performAccessibilityAudit (WWDC23 session 10035).

@@ -19,10 +19,11 @@
     "native:screens": "python3 native-lab/cli/simulator.py screens",
     "native:capture": "python3 native-lab/cli/simulator.py capture",
     "native:locale": "python3 native-lab/cli/localization.py",
-    "check:js": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs && node --check src/native-exec.mjs && node --check src/native-tools.mjs && node --check src/native-translation-tools.mjs && node --check src/native-image.mjs && node --check src/native-plan.mjs && node --check src/native-shot.mjs && node --check src/native-rating.mjs && node --check src/native-run-contract.mjs && node --check src/native-index.mjs && node --check src/native-judge.mjs && node --check src/native-visual.mjs",
+    "check:js": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs && node --check src/native-exec.mjs && node --check src/native-tools.mjs && node --check src/native-translation-tools.mjs && node --check src/native-image.mjs && node --check src/native-plan.mjs && node --check src/native-shot.mjs && node --check src/native-rating.mjs && node --check src/native-run-contract.mjs && node --check src/native-index.mjs && node --check src/native-judge.mjs && node --check src/native-visual.mjs && node --check src/native-accessibility.mjs",
     "check:native": "python3 -m compileall -q native-lab/cli native-lab/vendor",
     "native:displays": "python3 native-lab/cli/simulator.py displays",
-    "test:native-visual": "node --test tests/native-visual.test.mjs"
+    "test:native-visual": "node --test tests/native-visual.test.mjs",
+    "test:native-accessibility": "node --test tests/native-accessibility.test.mjs"
   },
   "dependencies": {
     "@axe-core/playwright": "4.14.0",
