@@ -3,6 +3,7 @@ import { checkNativeShot } from './native-shot.mjs';
 import { recordedNativeRating } from './native-rating.mjs';
 import { nativeRunContract } from './native-run-contract.mjs';
 import { indexCaptureRows } from './native-index.mjs';
+import { summarizeNativeAccessibility } from './native-accessibility.mjs';
 export function judgeNativeCapture(raw, plan, workspace, review) {
   const run = raw?.plan_results || raw;
   const expected = nativeExpectedCells(plan);
@@ -10,7 +11,7 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
   const { issues: errors, platform } = nativeRunContract(run, plan);
   const indexed = indexCaptureRows(rows);
   const expectedKeys = new Set(expected.map(nativeCellKey));
-  const verified = [], digests = new Map();
+  const verified = [], audits = [], digests = new Map();
   for (const cell of expected) {
     const key = nativeCellKey(cell);
     const matched = indexed.get(key) || [];
@@ -23,6 +24,7 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
     }
     digests.set(proof.image.sha256, key);
     verified.push({ cell: key, ...proof.image });
+    audits.push({ cell: key, audit: matched[0].accessibility_witness?.accessibility_audit });
   }
   const unexpected = rows.filter(r => !expectedKeys.has(nativeCellKey(r)));
   if (unexpected.length) errors.push({ code: 'UNPLANNED_SCREEN_ROWS', count: unexpected.length });
@@ -32,6 +34,8 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
     bundleId: plan.app.bundle_id, matrixCells: expected.length, verifiedCells: verified.length,
     captureCoveragePercent: Number((100 * verified.length / expected.length).toFixed(1)),
     rating, findings: errors, screenshots: verified,
+    accessibilityAudit: summarizeNativeAccessibility(audits, expected.length,
+      plan?.modes?.audit_accessibility === true),
     notVerified: ['exact_testflight_binary', 'capture_provider_origin_independently_authenticated', 'visual_design_without_human_review',
       'accessibility_beyond_selected_anchor', 'user_task_success', 'production_readiness'] };
 }
