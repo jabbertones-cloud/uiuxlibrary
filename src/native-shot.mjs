@@ -1,5 +1,7 @@
 import { verifyNativePng } from './native-image.mjs';
-export function checkNativeShot(row, cell, root) {
+import { checkMacShot } from './native-mac-shot.mjs';
+export function checkNativeShot(row, cell, root, platform = 'ios') {
+  if (platform === 'mac') return checkMacShot(row, cell, root);
   if (!row || row.skipped === true || row.dry_run === true)
     return { ok: false, reason: 'SCREEN_NOT_CAPTURED' };
   if (row.wait_for !== cell.wait_for)
