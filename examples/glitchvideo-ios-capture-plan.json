@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.clawarchitect.glitchvideo" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 16 Pro Max", "iPhone 16 Plus"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=dark"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-capture-live", "reach": {}, "launch_args": ["--scene=capture_live"], "wait_for": "Live camera preview", "timeout_s": 30 },
+    { "name": "02-effects-drawer", "reach": {}, "launch_args": ["--scene=effect_chromatic"], "wait_for": "Current state", "timeout_s": 30 },
+    { "name": "03-paywall-pro", "reach": {}, "launch_args": ["--scene=paywall"], "wait_for": "glitch.purchase.restore", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}

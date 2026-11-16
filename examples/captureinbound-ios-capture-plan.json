@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.smatdesign.capture" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 16 Pro Max", "iPhone 16 Plus"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=light"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-call-brief", "reach": {}, "launch_args": ["--tab=brief"], "wait_for": "Call Brief", "timeout_s": 30 },
+    { "name": "02-discrepancies", "reach": {}, "launch_args": ["--tab=discrepancies"], "wait_for": "Source of truth", "timeout_s": 30 },
+    { "name": "03-approvals", "reach": {}, "launch_args": ["--tab=approvals"], "wait_for": "Nothing waiting", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.clawarchitect.martialarts.pilot" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 16 Pro Max", "iPhone 16 Plus"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=dark"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-root-programs", "reach": {}, "launch_args": ["--screen=programs"], "wait_for": "Training progress", "timeout_s": 30 },
+    { "name": "02-lesson-player", "reach": {}, "launch_args": ["--screen=player"], "wait_for": "Mark complete", "timeout_s": 30 },
+    { "name": "03-settings", "reach": {}, "launch_args": ["--screen=settings"], "wait_for": "Settings", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}
