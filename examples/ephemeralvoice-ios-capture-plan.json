@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.smatdesigns.voiceping" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 16 Pro Max", "iPhone 16 Plus"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=light"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-talk", "reach": {}, "launch_args": ["--screen=talk"], "wait_for": "screen.talk", "timeout_s": 30 },
+    { "name": "02-contacts", "reach": {}, "launch_args": ["--screen=contacts"], "wait_for": "screen.contacts", "timeout_s": 30 },
+    { "name": "03-paywall", "reach": {}, "launch_args": ["--screen=paywall"], "wait_for": "screen.voicePingPaywall", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}

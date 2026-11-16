@@ -36,7 +36,7 @@ function createServer() {
   });
   server.registerTool('uiux_audit_page', {
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
-    description: 'Sample five real browser viewports with Playwright + axe, screenshot hashes and actionable failures. Requires exact UIUX_ALLOW_ORIGINS. Automated only.',
+    description: 'Sample 17 phone, tablet portrait/landscape, laptop, and desktop browser sizes with Playwright + axe. Returns a viewport screenshot hash at each size; below-fold and lazy-loaded visual review is not included. Requires exact UIUX_ALLOW_ORIGINS. Automated only.',
     inputSchema: z.object({ url: z.url(), theme: z.enum(['light', 'dark']).default('light') })
   }, async ({ url, theme }) => {
     try { return output(await auditPage(url, { theme, evidenceDir: resolve(workspace, '.uiux-evidence') })); }

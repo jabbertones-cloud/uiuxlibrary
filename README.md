@@ -10,18 +10,24 @@ This is the working code and portable skill source for the UI/UX capability prev
 - Structural three-tier DTCG token governance, with standalone CLI + deliberately failing fixtures.
 - SHA-256 evidence receipt verification. It refuses to self-certify human reviewers, first-time customer tasks, or deployment truth.
 - A stdio MCP server source built against the official MCP TypeScript SDK v2 and using Playwright + axe-core for sampled, read-only, allowlisted browser inspections.
-- Local source tests for passing inputs, negative fixtures, stale/symlink evidence, user task and SHA gates.
+- Five local test files cover browser-audit status classification, native screenshot/accessibility evidence, and dedicated token/receipt validation.
+- A local read-only MCP dogfood contract that exercises real token-audit and donor-catalog tools.
 
-## Local no-network test
+## Local checks
 
 Node.js >=22.13.0:
 
 ```sh
+npm ci
 npm test
 npm run check
 node src/cli.mjs tokens design-system/tokens.json
 node src/cli.mjs tokens fixtures/bad-tokens.json  # must exit 1
 ```
+
+`npm test` runs the existing Node test files. `npm run verify` combines syntax,
+Python compilation and the structural token audit. Neither proves browser
+rendering, visual quality, or first-time customer task success.
 
 ## MCP integration (requires dependency installation)
 
@@ -35,7 +41,7 @@ UIUX_WORKSPACE=/absolute/path/to/target/app \
 
 Configure your MCP host to launch Node with this absolute `server.mjs` path and workspace environment. The server exposes `uiux_audit_tokens`, `uiux_audit_page`, `uiux_release_gate`, `uiux_research_donors`. It is **not** a replacement for Figma MCP, Storybook MCP, Playwright MCP, or their existing authentication models. Host connections must be independently configured and tested.
 
-`uiux_audit_page` captures three viewports and runs axe WCAG-tagged automated rules. It **does not** verify all keyboard behaviors, user task success, or visual quality. Review all screenshots as actual artifact evidence.
+`uiux_audit_page` checks 17 phone, tablet portrait/landscape, laptop, and desktop sizes, runs axe WCAG-tagged automated rules, and saves one viewport screenshot per size. Viewport captures show the first screen, not the whole page. It blocks Cloudflare Web Analytics beacon traffic and reports its count as `suppressedTelemetryRequests`; other blocked requests remain a HOLD. Add exact third-party asset origins to `UIUX_ALLOW_ORIGINS` only when the page needs them to render, as with fonts or animation libraries. The audit does **not** verify all keyboard behaviors, user task success, or visual quality.
 
 ## Native iPhone, iPad and Mac evidence via AiSCent God Mode
 

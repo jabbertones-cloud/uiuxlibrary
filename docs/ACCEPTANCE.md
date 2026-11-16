@@ -39,6 +39,7 @@ Web: keyboard, pointer, mobile touch, light/dark, localization and RTL, 200% zoo
 
 - `PASS_STRUCTURAL_ONLY`: token governance passes; no assertion of font quality or contrast.
 - `PASS_AUTOMATED_ONLY`: browser + axe automated snapshot at sampled viewports passes; no claim that every path or WCAG criterion was manually verified.
+- `HOLD`: read-only policy blocked an unexpected request or browser errors make the snapshot inconclusive. Known Cloudflare Web Analytics beacon requests remain blocked and are reported separately as `suppressedTelemetryRequests`; they do not make a UI snapshot inconclusive.
 - `EVIDENCE_COMPLETE_INDEPENDENT_REVIEW_REQUIRED`: hashes and supplied fields pass; no independent identity/live checks performed.
 - `HOLD` or `FAIL`: required evidence absent or a measurable defect observed.
 - `APPROVED`: **never automatically returned by these tools**. Independent human and production evidence required outside this source bundle.

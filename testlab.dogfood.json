@@ -1,0 +1,32 @@
+{
+  "transport": "stdio",
+  "command": "node",
+  "args": ["src/server.mjs"],
+  "runtimeAuthority": "local",
+  "journeys": [
+    {
+      "id": "interface-lab.token-audit",
+      "question": "Do the current Interface Lab design tokens pass the documented structural governance check?",
+      "tool": "uiux_audit_tokens",
+      "args": { "file": "design-system/tokens.json" },
+      "expect": { "contains": ["PASS_STRUCTURAL_ONLY"] }
+    },
+    {
+      "id": "interface-lab.research-donors",
+      "question": "Can a designer inspect the pinned donor research and its adoption caveats?",
+      "tool": "uiux_research_donors",
+      "args": {},
+      "expect": { "contains": ["smat-uiux-donors/v1", "source-pinned donor candidates"] }
+    },
+    {
+      "id": "interface-lab.native-capture-review-hold",
+      "question": "Does the native AiSCent reviewer fail closed and return HOLD when given incomplete capture evidence?",
+      "tool": "uiux_review_aiscent_native",
+      "args": {
+        "capture": ".uiux-evidence/native/negative-placeholder.json",
+        "plan": "examples/ezseller-ios-ipad-capture-plan.json"
+      },
+      "expect": { "contains": ["\"status\": \"HOLD\"", "\"state\": \"NOT_RATED\"", "WRONG_APP_BUNDLE"] }
+    }
+  ]
+}

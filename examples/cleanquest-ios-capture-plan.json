@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.smatdesign.cleanquest" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 16 Pro Max", "iPhone 16 Plus"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=light"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-home", "reach": {}, "launch_args": ["--screen=home"], "wait_for": "House status", "timeout_s": 30 },
+    { "name": "02-rewards", "reach": {}, "launch_args": ["--screen=rewards"], "wait_for": "rewards.coinBalance", "timeout_s": 30 },
+    { "name": "03-paywall", "reach": {}, "launch_args": ["--screen=paywall"], "wait_for": "premium.restore", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}
