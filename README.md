@@ -84,16 +84,23 @@ Do not interpret green unit tests or a self-reported receipt as live product acc
 
 ## Hosted Browser Run proof (isolated, not released)
 
-The experimental, owner-only Cloudflare Browser Run Worker lives under
-`experiments/browser-run/`. It uses the official `@cloudflare/playwright`
-package to capture a fixed first-party AiSCent URL. Real local workerd /
-Chromium proof produced a 390x844 PNG with a verified SHA-256 digest and
-rejected unauthorized capture requests. Browser Run REST authentication
-currently fails 401, and no remote browser session, paid customer job,
-subscription, site mutation, or hosted Interface Lab tool was deployed.
-See `experiments/browser-run/README.md` for the independent evidence and
-remaining security / Cloudflare permission gates. The active hosted MCP
-remains its existing two read-only tools.
+The source-pinned Cloudflare Browser Run pilot lives under
+`experiments/browser-run/`. Its real local workerd and independent remote
+Wrangler-preview captures prove that Cloudflare's official
+`@cloudflare/playwright` executes Chromium and returns hash-verified PNGs.
+Direct Browser Rendering REST authentication still fails 401, but a remote
+Worker preview can use the Browser Run binding. See its README.
+
+A production-compatible, **owner-only** MCP capture integration is under
+`cloudflare/`. In the verified route-free remote preview, `/mcp` preserves the
+original two-tool catalog and `/mcp-owner` requires a distinct credential to
+call `uiux_capture_owned_site`. The tool returns actual phone/desktop images,
+SHA-256, observed page facts and a bounded ARIA snapshot for four fixed SMAT
+sites. It does not execute full Axe, persist images, certify UX, or create
+customer tenancy. The current public production Worker has **no configured bearer-token secret**
+despite requiring one. Provisioning public and owner tokens is therefore a
+release requirement, not a cosmetic configuration update. The public Worker
+remains unchanged until the exact-main release gate. See `docs/HOSTED-OWNER-CAPTURE-20261117.md`.
 
 ## Real website fleet dogfood (local, source-bound)
 

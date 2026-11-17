@@ -6,3 +6,9 @@ node_modules/
 native-lab/.bin/
 native-lab/**/__pycache__/
 *.pyc
+
+.cloudflare-build/
+cloudflare/.dev.vars
+cloudflare/.dev.vars.*
+
+cloudflare/.wrangler/
