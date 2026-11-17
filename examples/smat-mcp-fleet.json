@@ -1,0 +1,50 @@
+{
+  "schema": "smat-uiux-fleet/v1",
+  "sites": [
+    {
+      "id": "aiscent",
+      "origin": "https://aiscentmcp.com",
+      "job": "Find a free App Store readiness check, understand its result and next step without unsupported promises",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "ezseller",
+      "origin": "https://ezseller.smatdesigns.com",
+      "job": "Understand how to connect an Amazon seller account and what the first useful result will be",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "claimfix",
+      "origin": "https://claimfix.smatdesigns.com",
+      "job": "Understand the free claim-exposure estimate and reach safe setup without submitting private claim data",
+      "routes": [
+        "/",
+        "/pricing"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "cashcrop",
+      "origin": "https://cashcrop.smatdesigns.com",
+      "job": "Learn what the Dutchie integration delivers and find the actual authorized connection path",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ]
+    }
+  ]
+}

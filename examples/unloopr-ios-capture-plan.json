@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "app": { "bundle_id": "com.unloopr.agent.ios" },
+  "matrix": {
+    "locales": ["en-US"],
+    "devices": ["iPhone 16 Pro Max", "iPhone 16 Plus"]
+  },
+  "seed": {
+    "launch_args": ["--review-demo", "--store-screenshot", "--appearance=dark"],
+    "reset_between": "screens"
+  },
+  "shots": [
+    { "name": "01-brief", "reach": {}, "launch_args": ["--screen=brief"], "wait_for": "Morning Brief", "timeout_s": 30 },
+    { "name": "02-findings", "reach": {}, "launch_args": ["--screen=findings"], "wait_for": "No issues. Ship it.", "timeout_s": 30 },
+    { "name": "03-settings", "reach": {}, "launch_args": ["--screen=settings"], "wait_for": "Settings", "timeout_s": 30 }
+  ],
+  "output": { "path_template": "{locale}/{device}", "completeness_gate": true }
+}

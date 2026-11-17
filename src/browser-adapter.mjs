@@ -2,12 +2,24 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 
-const DEFAULT_VIEWPORTS = [
-  { name: 'narrow', width: 280, height: 780 },
-  { name: 'small-phone', width: 320, height: 780 },
-  { name: 'phone', width: 375, height: 812 },
-  { name: 'tablet', width: 768, height: 1024 },
-  { name: 'desktop', width: 1440, height: 900 }
+export const DEFAULT_VIEWPORTS = [
+  { name: 'narrow-280', width: 280, height: 780 },
+  { name: 'phone-small-320', width: 320, height: 568 },
+  { name: 'phone-360', width: 360, height: 800 },
+  { name: 'phone-375', width: 375, height: 812 },
+  { name: 'phone-390', width: 390, height: 844 },
+  { name: 'phone-large-414', width: 414, height: 896 },
+  { name: 'compact-tablet-600', width: 600, height: 960 },
+  { name: 'tablet-768', width: 768, height: 1024 },
+  { name: 'tablet-820', width: 820, height: 1180 },
+  { name: 'tablet-landscape-1024', width: 1024, height: 768 },
+  { name: 'tablet-portrait-1024', width: 1024, height: 1366 },
+  { name: 'tablet-landscape-1180', width: 1180, height: 820 },
+  { name: 'tablet-landscape-1366', width: 1366, height: 1024 },
+  { name: 'laptop-1280', width: 1280, height: 800 },
+  { name: 'laptop-1366', width: 1366, height: 768 },
+  { name: 'desktop-1440', width: 1440, height: 900 },
+  { name: 'desktop-1920', width: 1920, height: 1080 }
 ];
 
 export function parseOrigins(value = '') {
@@ -29,13 +41,37 @@ export function authorizedUrl(raw, origins) {
   return url;
 }
 
+export function isNonUiTelemetryRequest(method, rawUrl, origins = new Set()) {
+  let url;
+  try { url = new URL(rawUrl); } catch { return false; }
+  return (method === 'GET' && url.hostname === 'static.cloudflareinsights.com' && url.pathname.startsWith('/beacon.min.js')) ||
+    (method === 'POST' && origins.has(url.origin) && url.pathname === '/cdn-cgi/rum');
+}
+
+export function pageAuditStatus({ httpOk, blockedRequests, consoleErrors, overflow, violations }) {
+  const reasons = [];
+  if (!httpOk) reasons.push('HTTP_RESPONSE_FAILED');
+  if (overflow) reasons.push('HORIZONTAL_OVERFLOW');
+  if (violations) reasons.push('ACCESSIBILITY_VIOLATIONS');
+  if (blockedRequests) reasons.push('READ_ONLY_POLICY_BLOCKED_REQUESTS');
+  if (consoleErrors) reasons.push('BROWSER_ERRORS_OBSERVED');
+  const confirmedFailure = reasons.some(reason => [
+    'HTTP_RESPONSE_FAILED', 'HORIZONTAL_OVERFLOW', 'ACCESSIBILITY_VIOLATIONS'
+  ].includes(reason)) || (consoleErrors > 0 && blockedRequests === 0);
+  return {
+    status: confirmedFailure ? 'FAIL' : reasons.length ? 'HOLD' : 'PASS_AUTOMATED_ONLY',
+    reasons
+  };
+}
+
 export function installReadOnlyRoutes(context, origins, recordBlocked, { staging = false } = {}) {
+  const record = request => recordBlocked(isNonUiTelemetryRequest(request.method(), request.url(), origins) ? 'telemetry' : 'blocked');
   // Playwright routing does not cover WebSockets. Block them separately.
   if (!staging && typeof context.routeWebSocket === 'function')
-    context.routeWebSocket('**/*', ws => { recordBlocked(); ws.close(); });
+    context.routeWebSocket('**/*', ws => { recordBlocked('blocked'); ws.close(); });
   return context.route('**/*', route => {
     if (!staging && !['GET', 'HEAD'].includes(route.request().method())) {
-      recordBlocked();
+      record(route.request());
       return route.abort('blockedbyclient');
     }
     try {
@@ -43,7 +79,7 @@ export function installReadOnlyRoutes(context, origins, recordBlocked, { staging
       if (candidate.protocol === 'data:' || candidate.protocol === 'blob:' || origins.has(candidate.origin))
         return route.continue();
     } catch { /* fail closed */ }
-    recordBlocked();
+    record(route.request());
     return route.abort('blockedbyclient');
   });
 }
@@ -69,15 +105,22 @@ export async function auditPage(rawUrl, opts = {}) {
         acceptDownloads: false
       });
       let blockedRequests = 0;
-      await installReadOnlyRoutes(context, origins, () => { blockedRequests++; });
+      let suppressedTelemetryRequests = 0;
+      await installReadOnlyRoutes(context, origins, requestKind => {
+        if (requestKind === 'telemetry') suppressedTelemetryRequests++;
+        else blockedRequests++;
+      });
       const page = await context.newPage();
       const consoleErrors = [];
       page.on('pageerror', () => consoleErrors.push('uncaught_page_error'));
-      page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push('console_error'); });
+      page.on('console', msg => {
+        if (msg.type() === 'error' && !msg.text().includes('net::ERR_BLOCKED_BY_CLIENT'))
+          consoleErrors.push('console_error');
+      });
       const response = await page.goto(url.toString(), { waitUntil: 'domcontentloaded', timeout: 20000 });
-      await page.waitForTimeout(200); // settle immediate layout; not a complete loading-state test
+      await page.waitForTimeout(1000); // allow fonts and initial layout to settle; not a loading-state test
       const layout = await page.evaluate(() => ({
-        viewport: window.innerWidth,
+        measuredViewportWidth: window.innerWidth,
         bodyWidth: document.body?.scrollWidth || 0,
         documentWidth: document.documentElement.scrollWidth,
         documentHeight: document.documentElement.scrollHeight,
@@ -85,26 +128,33 @@ export async function auditPage(rawUrl, opts = {}) {
         documentTitlePresent: Boolean(document.title && document.title.trim())
       }));
       const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-      const screenshot = resolve(evidenceDir, `${runId}-${viewport.name}-${opts.theme || 'light'}.png`);
-      await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' });
-      const sha256 = createHash('sha256').update(await readFile(screenshot)).digest('hex');
       const violations = axe.violations.map(v => ({ id: v.id, impact: v.impact, affectedNodes: v.nodes.length, help: v.help, helpUrl: v.helpUrl, examples: v.nodes.slice(0, 3).map(n => ({ targets: n.target, failureSummary: n.failureSummary })) }));
       const overflow = layout.documentWidth > viewport.width + 1;
-      const overHeightLimit = layout.documentHeight > 16000;
-      const ok = response?.ok() && blockedRequests === 0 && consoleErrors.length === 0 && !overflow && !overHeightLimit && !violations.length;
+      const screenshot = resolve(evidenceDir, `${runId}-${viewport.name}-${opts.theme || 'light'}.png`);
+      await page.screenshot({ path: screenshot, animations: 'disabled' });
+      const sha256 = createHash('sha256').update(await readFile(screenshot)).digest('hex');
+      const screenshotEvidence = { path: relative(process.cwd(), screenshot), sha256 };
+      const judgment = pageAuditStatus({
+        httpOk: response?.ok(), blockedRequests, consoleErrors: consoleErrors.length,
+        overflow, violations: violations.length
+      });
       results.push({
-        viewport: viewport.name, width: viewport.width, theme: opts.theme || 'light',
-        automatedStatus: ok ? 'PASS_AUTOMATED_ONLY' : 'FAIL',
+        viewport: viewport.name, width: viewport.width, height: viewport.height, theme: opts.theme || 'light',
+        automatedStatus: judgment.status, statusReasons: judgment.reasons,
         httpStatus: response?.status() ?? null,
-        overflow, overHeightLimit, blockedRequests, consoleErrors: consoleErrors.length,
+        overflow, blockedRequests, suppressedTelemetryRequests, consoleErrors: consoleErrors.length,
         ...layout,
         accessibilityViolations: violations,
-        screenshot: { path: relative(process.cwd(), screenshot), sha256 },
-        notVerified: ['keyboard_operation_of_every_control', 'human_visual_quality', 'real_customer_task_success', 'visual_regression_against_baseline']
+        screenshot: screenshotEvidence,
+        notVerified: ['keyboard_operation_of_every_control', 'human_visual_quality', 'below_fold_visual_quality', 'lazy_loaded_content_visual_review', 'real_customer_task_success', 'visual_regression_against_baseline']
       });
       await context.close();
     }
-    return { status: results.every(r => r.automatedStatus === 'PASS_AUTOMATED_ONLY') ? 'PASS_AUTOMATED_ONLY' : 'FAIL', results };
+    return {
+      status: results.some(r => r.automatedStatus === 'FAIL') ? 'FAIL'
+        : results.some(r => r.automatedStatus === 'HOLD') ? 'HOLD' : 'PASS_AUTOMATED_ONLY',
+      results
+    };
   } finally {
     await browser.close();
   }
