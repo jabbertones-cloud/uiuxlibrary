@@ -39,7 +39,7 @@ UIUX_WORKSPACE=/absolute/path/to/target/app \
   node /absolute/path/to/uiuxlibrary/src/server.mjs
 ```
 
-Configure your MCP host to launch Node with this absolute `server.mjs` path and workspace environment. The server exposes `uiux_audit_tokens`, `uiux_audit_page`, `uiux_release_gate`, `uiux_research_donors`. It is **not** a replacement for Figma MCP, Storybook MCP, Playwright MCP, or their existing authentication models. Host connections must be independently configured and tested.
+Configure your MCP host to launch Node with this absolute `server.mjs` path and workspace environment. The local server exposes `uiux_audit_tokens`, `uiux_audit_page`, `uiux_audit_fleet`, `uiux_release_gate`, `uiux_research_donors` and additional native evidence tools. It is **not** a replacement for Figma MCP, Storybook MCP, Playwright MCP, or their existing authentication models. Host connections must be independently configured and tested.
 
 `uiux_audit_page` checks 17 phone, tablet portrait/landscape, laptop, and desktop sizes, runs axe WCAG-tagged automated rules, and saves one viewport screenshot per size. Viewport captures show the first screen, not the whole page. It blocks Cloudflare Web Analytics beacon traffic and reports its count as `suppressedTelemetryRequests`; other blocked requests remain a HOLD. Add exact third-party asset origins to `UIUX_ALLOW_ORIGINS` only when the page needs them to render, as with fonts or animation libraries. The audit does **not** verify all keyboard behaviors, user task success, or visual quality.
 
@@ -88,8 +88,28 @@ No account data, customer-identity proof or site mutation is required to run
 public-page audits. See docs/FLEET-AUDIT-OPERATING-CONTRACT.md and
 docs/FLEET-WEBSITE-DOGFOOD-20261117.md for real observed failures,
 the ClaimFix fix trial, and the explicit human review/release boundaries.
-The hosted Cloudflare MCP remains a separate two-tool service; it does not
-execute this browser fleet runner yet.
+For the **real local MCP** path, configure the stdio server with
+`UIUX_WORKSPACE` pointing to the checkout containing the manifest and
+`UIUX_ALLOW_ORIGINS` set by the operator to the exact permitted site origins.
+Call `uiux_audit_fleet` with `manifest: "examples/smat-mcp-fleet.json"` and
+`siteId: "claimfix"`. Each interactive MCP invocation is capped at two
+route/theme runs, generates 17 real browser screenshots per route, and returns
+SHA-bound evidence references. Unapproved origins, absolute manifest paths,
+missing results and network blocks fail closed. The model cannot grant itself
+additional origin access. For full fleet runs use the local CLI.
+
+Independently verify the **real agent-client journey**, with an ephemeral
+loopback HTTP page and official MCP client (not a mocked method return):
+
+    npm run test:mcp:fleet
+
+It verifies catalog discovery, denied unauthorized origin and absolute path,
+17 real Chromium requests, report hash and 17 individual screenshot hashes.
+A successful test is still `PASS_AUTOMATED_ONLY`, not visual/customer approval.
+
+The hosted Cloudflare MCP remains a **separate two-tool service**; it does not
+execute this browser fleet runner yet. No SaaS tenancy or remote Chrome
+capability is implied by a local stdio tool.
 
 ## Licenses
 

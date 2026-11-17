@@ -88,3 +88,18 @@ test('network/runtime errors and incomplete receipts become HOLD, not a false PA
     assert.equal(result.entries[0].counts.automatedOnly,0);
   }finally{rmSync(dir,{recursive:true,force:true});}
 });
+
+
+test('operator-controlled origin allowlist fails before starting any browser or creating evidence', async()=>{
+  let browserCalls=0;
+  const dir=mkdtempSync(join(tmpdir(),'uiux-fleet-deny-'));
+  try {
+    const audit=async()=>{browserCalls++;return fake();};
+    await assert.rejects(runFleetAudit(manifest,{allowedOrigins:new Set(),audit,outputDir:dir}),/not approved/);
+    await assert.rejects(runFleetAudit(manifest,{allowedOrigins:new Set(['https://other.example']),audit,outputDir:dir}),/not approved/);
+    assert.equal(browserCalls,0);
+    const result=await runFleetAudit(manifest,{allowedOrigins:new Set(['https://example.com']),audit,outputDir:dir});
+    assert.equal(result.status,'PASS_AUTOMATED_ONLY');
+    assert.equal(browserCalls,2);
+  } finally {rmSync(dir,{recursive:true,force:true});}
+});

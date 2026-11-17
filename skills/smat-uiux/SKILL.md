@@ -46,7 +46,14 @@ node scripts/uiux-check.mjs receipt /path/to/receipt.json
 node scripts/uiux-check.mjs receipt /path/to/receipt.json --release
 ```
 
-The bundled script checks SHA-bound local artifacts relative to the current project directory. Use MCP tool `uiux_audit_tokens`, `uiux_audit_page`, `uiux_release_gate`, and `uiux_research_donors` if the separate **SMAT Interface Lab MCP** has actually been installed and initialized. Do not say those tools ran unless they returned results. Consult `references/runtime-adapters.md` for when to invoke official Figma, Penpot, Storybook, Playwright, axe and component registries. No connector is presumed configured.
+The bundled script checks SHA-bound local artifacts relative to the current project directory. Use MCP tool `uiux_audit_tokens`, `uiux_audit_page`, `uiux_audit_fleet`, `uiux_release_gate`, and `uiux_research_donors` if the separate **SMAT Interface Lab MCP** has actually been installed and initialized. Do not say those tools ran unless they returned results. Consult `references/runtime-adapters.md` for when to invoke official Figma, Penpot, Storybook, Playwright, axe and component registries. No connector is presumed configured. For fleet checks through the local MCP,
+request `uiux_audit_fleet` with an existing workspace-relative manifest and
+selected site ID. The operator must have allowed that exact origin using
+`UIUX_ALLOW_ORIGINS`; never loosen this from tool arguments. Verify actual
+SHA-bound screenshots and raw output. The hosted Cloudflare MCP currently
+exposes only two static research/token tools, not this browser capability.
+Use `npm run test:mcp:fleet` to check a genuine MCP client-to-Playwright
+journey when the runtime is available.
 
 ## Design constraints
 

@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /** Stdio-only MCP server. No HTTP listener, generic fetch, or shell execution. */
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/server';
 import { serveStdio } from '@modelcontextprotocol/server/stdio';
 import * as z from 'zod/v4';
 import { auditTokens } from './token-gate.mjs';
 import { assessReceipt, withinWorkspace } from './receipt-gate.mjs';
-import { auditPage } from './browser-adapter.mjs';
+import { auditPage, parseOrigins } from './browser-adapter.mjs';
+import { runFleetAudit, validateFleetManifest } from './fleet-audit.mjs';
 import { diffScreenshots } from './screenshot-diff.mjs';
 import { judgeNativeCapture } from './native-judge.mjs';
 import { testStagingFlow } from './flow-adapter.mjs';
@@ -39,6 +41,32 @@ function createServer() {
   }, async ({ url, theme }) => {
     try { return output(await auditPage(url, { theme, evidenceDir: resolve(workspace, '.uiux-evidence') })); }
     catch (e) { return held(e); }
+  });
+  server.registerTool('uiux_audit_fleet', {
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    description: 'Run real read-only Playwright/axe scans on 17 viewport sizes for up to two routes of one source-controlled SMAT site. Requires a workspace-local fleet manifest and the SERVER OPERATOR UIUX_ALLOW_ORIGINS. Writes SHA-bound local screenshots and evidence; returns FAIL/HOLD/PASS_AUTOMATED_ONLY, never a human visual verdict. This is LOCAL STDIO, not the hosted two-tool service.',
+    inputSchema: z.object({
+      manifest: z.string().min(1).max(260),
+      siteId: z.string().regex(/^[a-z][a-z0-9-]{0,47}$/).optional()
+    })
+  }, async ({ manifest, siteId }) => {
+    try {
+      const path = withinWorkspace(manifest, workspace);
+      if (statSync(path).size > 32768) throw new Error('Fleet manifest exceeds 32 KiB');
+      const payload = JSON.parse(readFileSync(path, 'utf8'));
+      const selected = validateFleetManifest(payload, { siteId });
+      const runs = selected.sites.reduce((n, site) => n + site.routes.length * site.themes.length, 0);
+      if (runs > 2) throw new Error('Interactive MCP fleet audits are capped at two route/theme runs; use CLI for larger fleets');
+      // This Set is configured by the service operator, never accepted from a model/tool argument.
+      const approved = parseOrigins(process.env.UIUX_ALLOW_ORIGINS || '');
+      const evidenceDir = resolve(workspace, '.uiux-evidence', 'fleet', randomUUID());
+      const report = await runFleetAudit(payload, { siteId, allowedOrigins: approved, outputDir: evidenceDir });
+      return output({ schema: report.schema, runId: report.runId, status: report.status,
+        totals: report.totals, originPolicy: report.originPolicy,
+        humanVisualReviewed: report.humanVisualReviewed, customerTasksObserved: report.customerTasksObserved,
+        entries: report.entries.map(({ siteId, job, route, theme, status, counts, findings, evidence, notVerified }) =>
+          ({ siteId, job, route, theme, status, counts, findings, evidence, notVerified })) });
+    } catch (e) { return held(e); }
   });
   server.registerTool('uiux_diff_screenshots', {
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
