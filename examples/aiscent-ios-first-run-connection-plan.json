@@ -22,7 +22,15 @@
   "shots": [
     {
       "name": "01-connect-agent-first-run",
-      "reach": {},
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.today"
+            }
+          }
+        ]
+      },
       "wait_for": "mobile.today.connect.settings",
       "wait_for_traits": {
         "element_type": "button",
