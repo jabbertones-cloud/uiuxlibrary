@@ -20,17 +20,20 @@
     "native:screens": "python3 native-lab/cli/simulator.py screens",
     "native:capture": "python3 native-lab/cli/simulator.py capture",
     "native:locale": "python3 native-lab/cli/localization.py",
-    "check:js": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/fleet-audit.mjs && node --check scripts/fleet-audit.mjs && node --check scripts/mcp-fleet-integration.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs && node --check src/native-exec.mjs && node --check src/native-tools.mjs && node --check src/native-translation-tools.mjs && node --check src/native-image.mjs && node --check src/native-plan.mjs && node --check src/native-shot.mjs && node --check src/native-rating.mjs && node --check src/native-run-contract.mjs && node --check src/native-index.mjs && node --check src/native-judge.mjs && node --check src/native-visual.mjs && node --check src/native-accessibility.mjs",
+    "check:js": "node --check src/token-gate.mjs && node --check src/receipt-gate.mjs && node --check src/browser-adapter.mjs && node --check src/fleet-audit.mjs && node --check scripts/fleet-audit.mjs && node --check scripts/mcp-fleet-integration.mjs && node --check src/screenshot-diff.mjs && node --check src/flow-adapter.mjs && node --check src/server.mjs && node --check src/cli.mjs && node --check src/native-exec.mjs && node --check src/native-tools.mjs && node --check src/native-translation-tools.mjs && node --check src/native-image.mjs && node --check src/native-plan.mjs && node --check src/native-shot.mjs && node --check src/native-rating.mjs && node --check src/native-run-contract.mjs && node --check src/native-index.mjs && node --check src/native-judge.mjs && node --check src/native-visual.mjs && node --check src/native-accessibility.mjs && node --check cloudflare/worker.mjs && node --check cloudflare/capture-policy.mjs && node --check cloudflare/owned-capture.mjs && node --check cloudflare/capture-route.mjs && node --check scripts/hosted-preview-integration.mjs",
     "check:native": "python3 -m compileall -q native-lab/cli native-lab/vendor",
     "native:displays": "python3 native-lab/cli/simulator.py displays",
     "test:native-visual": "node --test tests/native-visual.test.mjs",
     "test:native-accessibility": "node --test tests/native-accessibility.test.mjs",
     "test:native-visible": "node --test tests/native-visible.test.mjs",
     "audit:fleet": "node scripts/fleet-audit.mjs examples/smat-mcp-fleet.json",
-    "test:mcp:fleet": "node scripts/mcp-fleet-integration.mjs"
+    "test:mcp:fleet": "node scripts/mcp-fleet-integration.mjs",
+    "bundle:cloudflare": "wrangler deploy --dry-run --config cloudflare/wrangler.jsonc --outdir .cloudflare-build",
+    "test:hosted:preview": "node scripts/hosted-preview-integration.mjs"
   },
   "dependencies": {
     "@axe-core/playwright": "4.14.0",
+    "@cloudflare/playwright": "1.4.0",
     "@modelcontextprotocol/server": "2.4.0",
     "pixelmatch": "7.1.0",
     "playwright": "1.65.1",
@@ -40,6 +43,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@modelcontextprotocol/client": "2.4.0",
-    "ux-ui-agent-skills": "3.0.0"
+    "ux-ui-agent-skills": "3.0.0",
+    "wrangler": "4.164.0"
   }
 }
