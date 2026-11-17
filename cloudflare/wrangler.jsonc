@@ -2,8 +2,37 @@
   "name": "smat-uiux-mcp",
   "main": "./worker.mjs",
   "compatibility_date": "2026-11-05",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "workers_dev": true,
-  "routes": [{ "pattern": "uiux.smatdesigns.com", "custom_domain": true }],
-  "vars": { "GIT_SHA": "6c54581ab1579bdd1be477592f0ff67bb68269eb" }
+  "routes": [
+    {
+      "pattern": "uiux.smatdesigns.com",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "GIT_SHA": "UNDEPLOYED"
+  },
+  "browser": {
+    "binding": "MYBROWSER",
+    "remote": true
+  },
+  "ratelimits": [
+    {
+      "name": "CAPTURE_LIMITER",
+      "namespace_id": "9911702",
+      "simple": {
+        "limit": 4,
+        "period": 60
+      }
+    }
+  ],
+  "secrets": {
+    "required": [
+      "MCP_BEARER_TOKEN",
+      "MCP_OWNER_TOKEN"
+    ]
+  }
 }

@@ -1,0 +1,32 @@
+{
+  "name": "smat-uiux-capture-preview",
+  "main": "./worker.mjs",
+  "compatibility_date": "2026-11-05",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": false,
+  "browser": {
+    "binding": "MYBROWSER",
+    "remote": true
+  },
+  "ratelimits": [
+    {
+      "name": "CAPTURE_LIMITER",
+      "namespace_id": "9911702",
+      "simple": {
+        "limit": 4,
+        "period": 60
+      }
+    }
+  ],
+  "vars": {
+    "GIT_SHA": "PREVIEW"
+  },
+  "secrets": {
+    "required": [
+      "MCP_BEARER_TOKEN",
+      "MCP_OWNER_TOKEN"
+    ]
+  }
+}
