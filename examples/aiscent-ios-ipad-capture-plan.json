@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "app": {
+    "bundle_id": "com.smatdesign.localizeshots"
+  },
+  "matrix": {
+    "locales": [
+      "en-US"
+    ],
+    "devices": [
+      "iPhone 17 Pro",
+      "iPad Pro 11-inch (M4)"
+    ]
+  },
+  "seed": {
+    "launch_args": [
+      "-LOCALIZESHOTS_UI_TESTING",
+      "YES"
+    ],
+    "reset_between": "screens"
+  },
+  "shots": [
+    {
+      "name": "01-today",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.today"
+            }
+          }
+        ]
+      },
+      "wait_for": "mobile.screen.today",
+      "required_visible_ids": [
+        "mobile.today.connect.settings"
+      ],
+      "timeout_s": 30
+    },
+    {
+      "name": "02-analytics",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.analytics"
+            }
+          }
+        ]
+      },
+      "wait_for": "mobile.screen.analytics",
+      "timeout_s": 30
+    },
+    {
+      "name": "03-apps",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.apps"
+            }
+          }
+        ]
+      },
+      "wait_for": "mobile.screen.apps",
+      "timeout_s": 30
+    },
+    {
+      "name": "04-ask",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.ask"
+            }
+          }
+        ]
+      },
+      "wait_for": "mobile.screen.ask",
+      "timeout_s": 30
+    },
+    {
+      "name": "05-settings",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.settings"
+            }
+          }
+        ]
+      },
+      "wait_for": "mobile.screen.settings",
+      "timeout_s": 30
+    }
+  ],
+  "modes": {
+    "audit_accessibility": true
+  },
+  "output": {
+    "path_template": "{locale}/{device}",
+    "completeness_gate": true
+  }
+}

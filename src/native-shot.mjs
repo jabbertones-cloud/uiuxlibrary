@@ -20,6 +20,8 @@ export function checkNativeShot(row, cell, root, platform = 'ios') {
       JSON.stringify(witness.tap_steps) !== JSON.stringify(cell.tap_steps) ||
       (cell.element_type && witness.element_type !== cell.element_type))
     return { ok: false, reason: 'XCUITEST_WITNESS_BINDING_INVALID' };
+  if (cell.require_hittable === true && (witness.hittable !== true || witness.enabled !== true))
+    return { ok: false, reason: 'XCUITEST_INTERACTIVE_ANCHOR_UNAVAILABLE' };
   const required = cell.required_visible_ids || [];
   const visible = witness.visible_requirements || [];
   if (!Array.isArray(visible) || visible.length !== required.length ||

@@ -8,7 +8,7 @@ AiSCent MCP is the capture provider. SMAT Interface Lab is the evidence and rubr
 
 - AiSCent `fleet-server/lib/capture_plan.py`: plan v1, explicit locale/device/shot matrix and fail-closed page-identity gate.
 - AiSCent `fleet-server/lib/capture_plan_xctest.py`: XCUITest wait-for identity, PNG hash, QA receipt.
-- AiSCent `fleet-server/lib/capture_plan_mac.py`: macOS window capture, **not** AX identity proof. Until it actually verifies `wait_for`, Interface Lab holds all Mac screenshots.
+- AiSCent `fleet-server/lib/capture_plan_mac.py`: Mac captures require a native pre/post `ApplicationServices.AXUIElement` `wait_for` witness with stable process/window and hash-bound PNG. Interface Lab rejects legacy window-only receipts; merged PR #16 verifies the newer Mac AX contract.
 - EzSeller `Apple/Shared/EzSellerViews.swift`: real Today, Orders, Products, Money, Inbox sections.
 - EzSeller `Apple/Shared/EzSellerStore.swift`: `--review-demo`, `--store-screenshot`, `--section=...` and `--appearance=...` launch flags.
 
@@ -31,8 +31,8 @@ The reviewer verifies one and only one result per planned cell, matching bundle,
 not dry-run, honest XCUITest `wait_for`, `destination_verified`, image QA,
 actual local PNG hash and decoding. It cross-checks witness identifier, bundle ID, simulator UDID, element type, tap sequence and PNG SHA-256 against the plan and file. It rejects repeated byte-identical screens.
 It reports an **evidence coverage percentage**, never a fabricated UX quality percentage.
-Missing captures, simulator errors, external paths, symlinks, missing visuals and all
-current Mac-only window captures are **HOLD**, not PASS.
+Missing captures, simulator errors, external paths, symlinks, missing visuals and
+legacy Mac window-only captures are **HOLD**, not PASS.
 
 A human rubric (0..5 per dimension, anchored to verified screen names) may record
 task clarity (20), navigation (20), action feedback (15), hierarchy (15),
@@ -94,6 +94,19 @@ required_visible_ids: [banner.reviewDemo]. The native XCTest capture must
 prove those accessibility identifiers are visibly hittable with nonblank
 labels in the same witness as the page anchor. Interface Lab rejects missing,
 wrong, duplicate, or hidden elements before scoring. No UI score is inferred.
+
+## Interactive screen proof (opt-in)
+
+For a task whose **page anchor itself is an actionable control**, set
+`wait_for_traits: { "element_type": "button", "require_hittable": true }`
+on its plan shot. The independent reviewer requires XCUITest witness
+`hittable === true` **and** `enabled === true`, otherwise it returns
+`XCUITEST_INTERACTIVE_ANCHOR_UNAVAILABLE`. A static title does not need
+these flags; missing evidence must not silently pass when opted in. This is
+not a full overlay detector: the capture provider must use native XCTest
+UI-interruption handling to detect OS prompts and unrelated overlays.
+The plan validates that `require_hittable` is a Boolean. See tests in
+`tests/native-visible.test.mjs` and the November 17 dogfood receipt.
 
 ## Where Apple found issues (when provided)
 

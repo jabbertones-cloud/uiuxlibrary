@@ -13,9 +13,11 @@ export function nativeExpectedCells(plan) {
     plan.shots.map(shot => ({ locale, device, name: shot.name, wait_for: shot.wait_for,
       bundle_id: plan.app.bundle_id, tap_steps: (shot.reach?.steps || []).map(s => s.tap),
       element_type: shot.wait_for_traits?.element_type || '',
+      require_hittable: shot.wait_for_traits?.require_hittable ?? false,
       required_visible_ids: shot.required_visible_ids ?? [] }))));
   if (cells.length > 10000 || cells.some(x => !/^[0-9]{2}-[a-z0-9-]+$/.test(x.name || '') ||
       typeof x.wait_for !== 'string' || !x.wait_for ||
+      typeof x.require_hittable !== 'boolean' ||
       !Array.isArray(x.required_visible_ids) || x.required_visible_ids.length > 12 ||
       x.required_visible_ids.some(id => typeof id !== 'string' || !id.trim() || id.length > 128) ||
       new Set(x.required_visible_ids).size !== x.required_visible_ids.length))
