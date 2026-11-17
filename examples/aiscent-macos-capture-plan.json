@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "app": {
+    "bundle_id": "com.smatdesign.localizeshots"
+  },
+  "matrix": {
+    "locales": [
+      "en-US"
+    ],
+    "devices": [
+      "1280x800",
+      "1440x900"
+    ]
+  },
+  "seed": {
+    "launch_args": [
+      "-onboardingComplete",
+      "YES"
+    ],
+    "reset_between": "screens"
+  },
+  "shots": [
+    {
+      "name": "01-today",
+      "reach": {},
+      "wait_for": "screen.today",
+      "timeout_s": 30
+    },
+    {
+      "name": "02-growth",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "sidebar.nav.growth"
+            }
+          }
+        ]
+      },
+      "wait_for": "screen.growth",
+      "timeout_s": 30
+    },
+    {
+      "name": "03-metadata",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "sidebar.nav.metadata"
+            }
+          }
+        ]
+      },
+      "wait_for": "screen.metadata",
+      "timeout_s": 30
+    },
+    {
+      "name": "04-capture",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "sidebar.nav.capture"
+            }
+          }
+        ]
+      },
+      "wait_for": "screen.capture",
+      "timeout_s": 30
+    },
+    {
+      "name": "05-translation-review",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "sidebar.nav.translationReview"
+            }
+          }
+        ]
+      },
+      "wait_for": "screen.translationReview",
+      "timeout_s": 30
+    },
+    {
+      "name": "06-agent-activity",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "sidebar.nav.agentActivity"
+            }
+          }
+        ]
+      },
+      "wait_for": "screen.agentActivity",
+      "timeout_s": 30
+    }
+  ],
+  "output": {
+    "path_template": "{locale}/{device}",
+    "completeness_gate": true
+  }
+}
