@@ -50,8 +50,9 @@ AiSCent capture-plan reviewer. This is **not** a simulator driver and it never
 calls physical devices. AiSCent God Mode on the M2 is responsible for all
 captures. The reviewer verifies screen identity, screenshot hashes, complete
 locale/device/section matrices and six-axis **reviewer-reported** ratings.
-Missing images, bad hashes, missing XCUITest proof and current Mac window-only
-captures return HOLD, never a guessed UI rating.
+Missing images, bad hashes, missing XCUITest proof and legacy Mac window-only
+captures return HOLD, never a guessed UI rating. Verified Mac pre/post AX
+identity proof is supported; a screenshot of a window alone is not enough.
 
 For standalone readback, with the capture results and plan copied inside the
 workspace:
@@ -62,15 +63,23 @@ node src/cli.mjs native .uiux-evidence/aiscent-capture.json examples/ezseller-io
 
 See [the native capture contract](docs/NATIVE-AISCENT-EVIDENCE.md) and the
 EzSeller [iOS/iPad](examples/ezseller-ios-ipad-capture-plan.json) and
-[Mac](examples/ezseller-macos-capture-plan.json) plans. Source syntax checks
-are not acceptance tests; an actual AiSCent screenshot evidence receipt and
-human UX review are required before any design-improvement claim.
+[Mac](examples/ezseller-macos-capture-plan.json) plans. The same reviewed
+contract covers AiSCent [iOS/iPad navigation](examples/aiscent-ios-ipad-capture-plan.json),
+[first-run connection](examples/aiscent-ios-first-run-connection-plan.json) and
+[Mac sidebar](examples/aiscent-macos-capture-plan.json). The first-run plan
+opts into a hittable, enabled button witness; static screens stay exempt.
+These source-grounded capture recipes have passed structural validation against
+AiSCent's provider, **not** a live capture of the latest native apps. See
+[November 17 dogfood](docs/NATIVE-DOGFOOD-20261117.md) for binary freshness,
+invalid black frames, website deployment holds and measured test receipts.
+An actual AiSCent screenshot evidence receipt and human UX review are required
+before any design-improvement claim.
 
 ## Quality contract
 
 Read [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/SECURITY.md](docs/SECURITY.md). Reuse donor tools according to [docs/DONORS.md](docs/DONORS.md); entries are researched candidates, not a guarantee that installation or runtime tests succeeded.
 
-Do not interpret 11 unit tests or a self-reported receipt as live product acceptance. The full proof line remains CODE -> EXACT HEAD -> MERGE -> EXACT MAIN -> DEPLOY -> LIVE CUSTOMER ACCEPTANCE -> ADVERSARIAL REGRESSION.
+Do not interpret green unit tests or a self-reported receipt as live product acceptance. The full proof line remains CODE -> EXACT HEAD -> MERGE -> EXACT MAIN -> DEPLOY -> LIVE CUSTOMER ACCEPTANCE -> ADVERSARIAL REGRESSION.
 
 
 ## Real website fleet dogfood (local, source-bound)
