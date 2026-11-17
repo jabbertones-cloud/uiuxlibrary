@@ -124,6 +124,14 @@ export function summarizeAudit(result) {
 
 export async function runFleetAudit(document, options = {}) {
   const manifest = validateFleetManifest(document, { siteId: options.siteId });
+  // Local CLI manifests are source-controlled. MCP callers additionally require
+  // a separately configured operator allowlist; no model-provided authority.
+  if (options.allowedOrigins !== undefined) {
+    if (!(options.allowedOrigins instanceof Set) || options.allowedOrigins.size === 0 ||
+        manifest.sites.some(site => !options.allowedOrigins.has(site.origin))) {
+      throw new Error('Fleet origin not approved in operator UIUX_ALLOW_ORIGINS');
+    }
+  }
   const runId = randomUUID();
   const evidenceDir = resolve(options.outputDir ??
     join(process.cwd(), '.uiux-evidence', 'fleet', runId));
