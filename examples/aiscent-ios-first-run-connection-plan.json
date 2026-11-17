@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "app": {
+    "bundle_id": "com.smatdesign.localizeshots"
+  },
+  "matrix": {
+    "locales": [
+      "en-US"
+    ],
+    "devices": [
+      "iPhone 17 Pro",
+      "iPad Pro 11-inch (M4)"
+    ]
+  },
+  "seed": {
+    "launch_args": [
+      "-LOCALIZESHOTS_UI_TESTING",
+      "YES"
+    ],
+    "reset_between": "locales"
+  },
+  "shots": [
+    {
+      "name": "01-connect-agent-first-run",
+      "reach": {},
+      "wait_for": "mobile.today.connect.settings",
+      "wait_for_traits": {
+        "element_type": "button",
+        "require_hittable": true
+      },
+      "timeout_s": 30
+    }
+  ],
+  "output": {
+    "path_template": "{locale}/{device}",
+    "completeness_gate": true
+  }
+}
