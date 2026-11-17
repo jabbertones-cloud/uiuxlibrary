@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 
-const DEFAULT_VIEWPORTS = [
+export const DEFAULT_VIEWPORTS = [
   { name: 'narrow-280', width: 280, height: 780 },
   { name: 'phone-small-320', width: 320, height: 568 },
   { name: 'phone-360', width: 360, height: 800 },
@@ -120,7 +120,7 @@ export async function auditPage(rawUrl, opts = {}) {
       const response = await page.goto(url.toString(), { waitUntil: 'domcontentloaded', timeout: 20000 });
       await page.waitForTimeout(1000); // allow fonts and initial layout to settle; not a loading-state test
       const layout = await page.evaluate(() => ({
-        viewport: window.innerWidth,
+        measuredViewportWidth: window.innerWidth,
         bodyWidth: document.body?.scrollWidth || 0,
         documentWidth: document.documentElement.scrollWidth,
         documentHeight: document.documentElement.scrollHeight,
