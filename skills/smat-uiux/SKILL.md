@@ -50,10 +50,16 @@ The bundled script checks SHA-bound local artifacts relative to the current proj
 request `uiux_audit_fleet` with an existing workspace-relative manifest and
 selected site ID. The operator must have allowed that exact origin using
 `UIUX_ALLOW_ORIGINS`; never loosen this from tool arguments. Verify actual
-SHA-bound screenshots and raw output. The hosted Cloudflare MCP currently
-exposes only two static research/token tools, not this browser capability.
-Use `npm run test:mcp:fleet` to check a genuine MCP client-to-Playwright
-journey when the runtime is available.
+SHA-bound screenshots and raw output. The public Cloudflare `/mcp` endpoint preserves its two static tools.
+The separately authenticated `/mcp-owner` path, when actually deployed and
+verified, exposes `uiux_capture_owned_site` for public SMAT site IDs with
+one phone or desktop screenshot and a bounded ARIA tree. This is **not** the
+full local Axe/fleet audit and does not certify visual quality. Verify the
+real Worker SHA, credential boundary, PNG digest and source-bound site before
+claiming hosted execution. Use `npm run test:mcp:fleet` for local client-to-
+Playwright proof, and `npm run test:hosted:preview` for a real authenticated
+Cloudflare remote-preview smoke with owner and public tokens from a private
+credential source.
 
 ## Design constraints
 
