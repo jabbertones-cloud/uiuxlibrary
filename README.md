@@ -73,6 +73,19 @@ Read [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/SECURITY.md](docs/SECURI
 Do not interpret 11 unit tests or a self-reported receipt as live product acceptance. The full proof line remains CODE -> EXACT HEAD -> MERGE -> EXACT MAIN -> DEPLOY -> LIVE CUSTOMER ACCEPTANCE -> ADVERSARIAL REGRESSION.
 
 
+## Hosted Browser Run proof (isolated, not released)
+
+The experimental, owner-only Cloudflare Browser Run Worker lives under
+`experiments/browser-run/`. It uses the official `@cloudflare/playwright`
+package to capture a fixed first-party AiSCent URL. Real local workerd /
+Chromium proof produced a 390x844 PNG with a verified SHA-256 digest and
+rejected unauthorized capture requests. Browser Run REST authentication
+currently fails 401, and no remote browser session, paid customer job,
+subscription, site mutation, or hosted Interface Lab tool was deployed.
+See `experiments/browser-run/README.md` for the independent evidence and
+remaining security / Cloudflare permission gates. The active hosted MCP
+remains its existing two read-only tools.
+
 ## Real website fleet dogfood (local, source-bound)
 
 Interface Lab now includes a source-controlled multi-site manifest and an executable
