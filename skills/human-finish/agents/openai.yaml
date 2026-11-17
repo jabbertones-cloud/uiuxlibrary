@@ -1,0 +1,4 @@
+interface:
+  display_name: "Human Finish"
+  short_description: "Intent-led polish, customer psychology, brand perspective and real acceptance"
+  default_prompt: "Audit this product with Human Finish, grounded in source and real user work. Separate MCP operations, app UX, marketing storytelling and service delivery, then produce evidence-backed repairs and acceptance gates."
