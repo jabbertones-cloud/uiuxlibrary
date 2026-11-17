@@ -22,7 +22,15 @@
   "shots": [
     {
       "name": "01-today",
-      "reach": {},
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "mobile.tab.today"
+            }
+          }
+        ]
+      },
       "wait_for": "mobile.screen.today",
       "required_visible_ids": [
         "mobile.today.connect.settings"
