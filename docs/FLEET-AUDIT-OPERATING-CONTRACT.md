@@ -28,3 +28,21 @@ Do not let beautiful screenshots hide dead CTAs, deceptive promises, unauthorize
 Record each repeatable finding in its product repository. Compare source-pinned, licensed donor-native fixes with the same page, width and customer task; reject changes that worsen other states. Preserve unsuccessful experiments. Feed confirmed repeatable wins into SMAT Research and GitHub Research Pattern Cards. After exact-head tests, merge and retest exact-main, deploy with exact live SHA, independently retest production and run adversarial regression. GitHub Actions are prohibited.
 
 The public Cloudflare Worker at https://uiux.smatdesigns.com/mcp still serves only two read-only token/donor tools. The fleet audit is a LOCAL feature until a durable authenticated job executor, per-tenant authorization and deployment are built and independently tested. A successful CLI run does not expand hosted capabilities.
+
+## Agent-callable MCP audit (local stdio only)
+
+Use a host-configured `UIUX_WORKSPACE` and `UIUX_ALLOW_ORIGINS`, with a local
+manifest file under the workspace root. Invoke `uiux_audit_fleet` using the
+workspace-relative manifest and optionally one `siteId`. The tool cannot
+authorize an unlisted origin, and rejects large/escaped manifests and more
+than two route/theme runs in a single call. It returns measured defects and
+SHA-bound local reports, with a strict warning that visual and human task
+acceptance have not been completed. The public Cloudflare MCP remains a
+separate two-tool read-only service.
+
+The official MCP client integration (`npm run test:mcp:fleet`) creates its own
+loopback HTTP fixture and calls the real spawned stdio service. It checks
+tool discovery, denied origins and absolute paths before a network request,
+17 actual Chromium visits, evidence hashes, and all 17 screenshot hashes.
+A return code of zero means these narrow, local contracts passed, **not**
+that an application was visually approved. No GitHub Actions are required.
