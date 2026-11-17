@@ -72,6 +72,25 @@ Read [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) and [docs/SECURITY.md](docs/SECURI
 
 Do not interpret 11 unit tests or a self-reported receipt as live product acceptance. The full proof line remains CODE -> EXACT HEAD -> MERGE -> EXACT MAIN -> DEPLOY -> LIVE CUSTOMER ACCEPTANCE -> ADVERSARIAL REGRESSION.
 
+
+## Real website fleet dogfood (local, source-bound)
+
+Interface Lab now includes a source-controlled multi-site manifest and an executable
+read-only Playwright/axe browser fleet runner. It audits actual pages across 17
+viewport sizes, saves local screenshots and hash-bound reports, and distinguishes
+confirmed FAIL from policy/coverage HOLD. It never auto-approves a design.
+
+    npm run audit:fleet
+    node scripts/fleet-audit.mjs examples/smat-mcp-fleet.json --site claimfix
+
+The manifest includes AiSCent, EzSeller, ClaimFix (home + pricing) and CashCrop.
+No account data, customer-identity proof or site mutation is required to run
+public-page audits. See docs/FLEET-AUDIT-OPERATING-CONTRACT.md and
+docs/FLEET-WEBSITE-DOGFOOD-20261117.md for real observed failures,
+the ClaimFix fix trial, and the explicit human review/release boundaries.
+The hosted Cloudflare MCP remains a separate two-tool service; it does not
+execute this browser fleet runner yet.
+
 ## Licenses
 
 The SMAT-authored source is proprietary pending an explicit licensing decision (`UNLICENSED`). No external donor source code is copied into this distribution; adapters call published upstream APIs/packages. Consult each upstream dependency's license and commercial terms separately before deployment. Donor SHA links are evidence of what was inspected, not installed dependencies.
