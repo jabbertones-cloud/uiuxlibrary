@@ -66,11 +66,15 @@ EzSeller [iOS/iPad](examples/ezseller-ios-ipad-capture-plan.json) and
 [Mac](examples/ezseller-macos-capture-plan.json) plans. The same reviewed
 contract covers AiSCent [iOS/iPad navigation](examples/aiscent-ios-ipad-capture-plan.json),
 [first-run connection](examples/aiscent-ios-first-run-connection-plan.json) and
-[Mac sidebar](examples/aiscent-macos-capture-plan.json). The first-run plan
+[Mac sidebar](examples/aiscent-macos-capture-plan.json), plus a
+[Mac agent post-action](examples/aiscent-macos-agent-postaction-plan.json) plan
+that requires the actual agent screen after pressing its setup button.
+The first-run plan
 opts into a hittable, enabled button witness; static screens stay exempt.
 These source-grounded capture recipes have passed structural validation against
 AiSCent's provider, **not** a live capture of the latest native apps. See
-[November 17 dogfood](docs/NATIVE-DOGFOOD-20261117.md) for binary freshness,
+[November 17 dogfood](docs/NATIVE-DOGFOOD-20261117.md) and
+[post-action native dogfood](docs/NATIVE-POSTACTION-DOGFOOD-20261117.md) for binary freshness,
 invalid black frames, website deployment holds and measured test receipts.
 An actual AiSCent screenshot evidence receipt and human UX review are required
 before any design-improvement claim.
