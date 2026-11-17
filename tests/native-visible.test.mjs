@@ -65,3 +65,33 @@ test('invalid visible-id plans fail before an evidence review',()=>{
     assert.throws(()=>nativeExpectedCells(plan));
   }
 });
+
+test('opt-in interactive anchor rejects an obstructed or disabled control',()=>{
+  const {root,row,plan}=evidence();
+  try{
+    plan.shots[0].required_visible_ids=[];
+    plan.shots[0].wait_for_traits={element_type:'button',require_hittable:true};
+    row.accessibility_witness.element_type='button';
+    const cell=nativeExpectedCells(plan)[0];
+    assert.equal(checkNativeShot(row,cell,root).reason,'XCUITEST_INTERACTIVE_ANCHOR_UNAVAILABLE');
+    row.accessibility_witness.hittable=false;
+    row.accessibility_witness.enabled=true;
+    assert.equal(checkNativeShot(row,cell,root).reason,'XCUITEST_INTERACTIVE_ANCHOR_UNAVAILABLE');
+    row.accessibility_witness.hittable=true;
+    row.accessibility_witness.enabled=false;
+    assert.equal(checkNativeShot(row,cell,root).reason,'XCUITEST_INTERACTIVE_ANCHOR_UNAVAILABLE');
+    row.accessibility_witness.enabled=true;
+    assert.equal(checkNativeShot(row,cell,root).ok,true);
+  }finally{rmSync(root,{recursive:true,force:true});}
+});
+test('static anchors stay valid; opt-in requires a real boolean',()=>{
+  const {root,row,plan}=evidence();
+  try{
+    plan.shots[0].required_visible_ids=[];
+    assert.equal(checkNativeShot(row,nativeExpectedCells(plan)[0],root).ok,true);
+    plan.shots[0].wait_for_traits={require_hittable:'true'};
+    assert.throws(()=>nativeExpectedCells(plan),/Invalid or oversized/);
+    plan.shots[0].wait_for_traits={require_hittable:false};
+    assert.equal(checkNativeShot(row,nativeExpectedCells(plan)[0],root).ok,true);
+  }finally{rmSync(root,{recursive:true,force:true});}
+});
