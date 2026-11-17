@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "app": {
+    "bundle_id": "com.smatdesign.localizeshots"
+  },
+  "matrix": {
+    "locales": [
+      "en-US"
+    ],
+    "devices": [
+      "1280x800",
+      "1440x900"
+    ]
+  },
+  "seed": {
+    "launch_args": [
+      "-onboardingComplete",
+      "YES",
+      "-reviewDemo",
+      "NO"
+    ],
+    "reset_between": "screens"
+  },
+  "shots": [
+    {
+      "name": "01-agent-connection-opened",
+      "reach": {
+        "steps": [
+          {
+            "tap": {
+              "id": "today.open_agent"
+            }
+          }
+        ]
+      },
+      "wait_for": "onboardingAgentPage",
+      "timeout_s": 30
+    }
+  ],
+  "output": {
+    "path_template": "{locale}/{device}",
+    "completeness_gate": true
+  }
+}
