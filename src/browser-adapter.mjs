@@ -118,6 +118,9 @@ export async function auditPage(rawUrl, opts = {}) {
           consoleErrors.push('console_error');
       });
       const response = await page.goto(url.toString(), { waitUntil: 'domcontentloaded', timeout: 20000 });
+      const redirectChain = [];
+      for (let prior = response?.request().redirectedFrom(), n = 0; prior && n < 8;
+        prior = prior.redirectedFrom(), n++) redirectChain.unshift(prior.url());
       await page.waitForTimeout(1000); // allow fonts and initial layout to settle; not a loading-state test
       const layout = await page.evaluate(() => ({
         measuredViewportWidth: window.innerWidth,
@@ -142,6 +145,7 @@ export async function auditPage(rawUrl, opts = {}) {
         viewport: viewport.name, width: viewport.width, height: viewport.height, theme: opts.theme || 'light',
         automatedStatus: judgment.status, statusReasons: judgment.reasons,
         httpStatus: response?.status() ?? null,
+        finalUrl: page.url(), redirectChain, httpScope: 'EXACT_ROUTE_ONLY',
         overflow, blockedRequests, suppressedTelemetryRequests, consoleErrors: consoleErrors.length,
         ...layout,
         accessibilityViolations: violations,

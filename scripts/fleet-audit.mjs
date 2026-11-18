@@ -19,8 +19,10 @@ try {
     runId: summary.runId,
     reportDirectory: summary.reportDirectory,
     totals: summary.totals,
-    sites: summary.entries.map(({siteId, route, theme, status, findings, counts, evidence}) =>
-      ({siteId, route, theme, status, counts, findings, evidenceSha256: evidence.sha256}))
+    sites: summary.entries.map(({siteId, route, theme, status, operationalState, customerTaskStatus,
+      auditSkipped, httpScope, findings, counts, evidence}) =>
+      ({siteId, route, theme, status, operationalState, customerTaskStatus, auditSkipped,
+        httpScope, counts, findings, evidenceSha256: evidence.sha256}))
   }, null, 2));
   process.exitCode = summary.status === 'PASS_AUTOMATED_ONLY' ? 0 :
     summary.status === 'FAIL' ? 1 : 2;

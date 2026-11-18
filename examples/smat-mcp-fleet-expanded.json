@@ -1,0 +1,170 @@
+{
+  "schema": "smat-uiux-fleet/v1",
+  "sites": [
+    {
+      "id": "aiscent",
+      "origin": "https://aiscentmcp.com",
+      "job": "Find a free App Store readiness check, understand its result and next step without unsupported promises",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "ezseller",
+      "origin": "https://ezseller.smatdesigns.com",
+      "job": "Understand how to connect an Amazon seller account and what the first useful result will be",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "claimfix",
+      "origin": "https://claimfix.smatdesigns.com",
+      "job": "Understand the free claim-exposure estimate and reach safe setup without submitting private claim data",
+      "routes": [
+        "/",
+        "/pricing"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "cashcrop",
+      "origin": "https://cashcrop.smatdesigns.com",
+      "job": "Learn what the Dutchie integration delivers and find the actual authorized connection path",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ]
+    },
+    {
+      "id": "usipe",
+      "origin": "https://usipe.smatdesigns.com",
+      "job": "Identify independent trademark-risk intelligence and a real source-linked example without guaranteed enforcement claims",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "UNKNOWN",
+        "observedUrl": "https://usipe.smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "GET homepage returned HTTP 200; customer intelligence workflow not independently verified"
+      }
+    },
+    {
+      "id": "smatdesigns",
+      "origin": "https://smatdesigns.com",
+      "job": "See an actual functioning SMAT product outcome, then find a verifiable contact or purchase route",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "UNKNOWN",
+        "observedUrl": "https://smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "GET homepage returned HTTP 200; first-time customer task not independently verified"
+      }
+    },
+    {
+      "id": "gurlbye",
+      "origin": "https://gurlbye.smatdesigns.com",
+      "job": "Understand the real service and complete a safe first customer action",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "UNKNOWN",
+        "observedUrl": "https://gurlbye.smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "GET homepage returned HTTP 200; buyer action not independently verified"
+      }
+    },
+    {
+      "id": "hoppa",
+      "origin": "https://hoppa.smatdesigns.com",
+      "job": "Understand the product and complete its primary first-time customer journey",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "UNKNOWN",
+        "observedUrl": "https://hoppa.smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "GET homepage returned HTTP 200; product task not independently verified"
+      }
+    },
+    {
+      "id": "rentviet",
+      "origin": "https://rentviet.smatdesigns.com",
+      "job": "Find an available property and verify the actual rental inquiry process",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "UNKNOWN",
+        "observedUrl": "https://rentviet.smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "GET homepage returned HTTP 200; actual listing inquiry outcome not independently verified"
+      }
+    },
+    {
+      "id": "waitpay",
+      "origin": "https://waitpay.smatdesigns.com",
+      "job": "Identify whether checkout or a customer transaction is available",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "PARKED",
+        "observedUrl": "https://waitpay.smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "Homepage states WaitPay VN is parked safely during database-backed migration, so customer commerce must be held"
+      }
+    },
+    {
+      "id": "ezamazon-alias",
+      "origin": "https://ezamazon.smatdesigns.com",
+      "job": "Resolve the legacy EzAmazon alias to the canonical EzSeller website",
+      "routes": [
+        "/"
+      ],
+      "themes": [
+        "light"
+      ],
+      "operational": {
+        "state": "REDIRECT",
+        "observedUrl": "https://ezamazon.smatdesigns.com/",
+        "observedAt": "2026-11-17",
+        "claim": "HEAD / redirected to https://ezseller.smatdesigns.com/ in one hop; do not count the alias as a separate product",
+        "redirectDestination": "https://ezseller.smatdesigns.com/"
+      }
+    }
+  ]
+}
