@@ -7,6 +7,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { auditPage, DEFAULT_VIEWPORTS } from './browser-adapter.mjs';
+import { normalizeOperational, auditDisposition } from './operational-truth.mjs';
 
 const ID = /^[a-z][a-z0-9-]{0,47}$/;
 const ROUTE = /^\/[A-Za-z0-9._~/-]*$/;
@@ -55,7 +56,8 @@ export function validateFleetManifest(document, { siteId } = {}) {
       throw new Error('Only unique light/dark themes are allowed');
     if (typeof site.job !== 'string' || site.job.length < 8 || site.job.length > 240)
       throw new Error('Each site requires a bounded real customer job');
-    return { id: site.id, origin, routes: checkedRoutes, themes, job: site.job };
+    return { id: site.id, origin, routes: checkedRoutes, themes, job: site.job,
+      operational: normalizeOperational(site, origin, checkedRoutes) };
   });
   const selected = siteId ? sites.filter(site => site.id === siteId) : sites;
   if (selected.length === 0) throw new Error('Unknown site ID');
@@ -142,12 +144,15 @@ export async function runFleetAudit(document, options = {}) {
     for (const route of site.routes) {
       for (const theme of site.themes) {
         const url = new URL(route, site.origin).toString();
+        const disposition = auditDisposition(site.operational);
         const fileId = sha256(route).slice(0, 10);
         const siteDir = join(evidenceDir, site.id, fileId + '-' + theme);
         let raw;
         let error = null;
         try {
-          raw = await audit(url, { theme, allowedOrigins: new Set([site.origin]), evidenceDir: siteDir });
+          raw = disposition.skip ? { status: 'HOLD', results: [],
+            reason: site.operational.state + '_NON_VISUAL_ROUTE' }
+          : await audit(url, { theme, allowedOrigins: new Set([site.origin]), evidenceDir: siteDir });
         } catch (e) {
           error = String(e?.message || e).slice(0, 220);
           raw = { status: 'HOLD', results: [], error };
@@ -157,6 +162,9 @@ export async function runFleetAudit(document, options = {}) {
         const reportFile = join(siteDir, 'browser-audit.json');
         await writeFile(reportFile, bytes);
         entries.push({ siteId: site.id, job: site.job, route, theme, url,
+          operationalState: site.operational.state, observation: site.operational.observation,
+          customerTaskStatus: disposition.customerTaskStatus, apiEndpointsVerified: false,
+          httpScope: 'EXACT_ROUTE_ONLY', auditSkipped: disposition.skip,
           ...summarizeAudit(raw), ...(error ? { error } : {}),
           evidence: { reportFile, sha256: sha256(bytes), screenshotDirectory: siteDir } });
       }
@@ -169,6 +177,8 @@ export async function runFleetAudit(document, options = {}) {
     originPolicy: 'exact_origin_read_only', humanVisualReviewed: false, customerTasksObserved: false,
     manifestSha256: sha256(JSON.stringify(manifest)), reportDirectory: evidenceDir,
     totals: { siteCount: manifest.sites.length, routeThemeRuns: entries.length,
+      visualSitesAudited: new Set(entries.filter(e => !e.auditSkipped).map(e => e.siteId)).size,
+      nonVisualRoutesSkipped: entries.filter(e => e.auditSkipped).length, customerTasksVerified: 0,
       sampledViewports: entries.reduce((n, e) => n + e.sampledViewports, 0),
       failedRoutes: entries.filter(e => e.status === 'FAIL').length,
       heldRoutes: entries.filter(e => e.status === 'HOLD').length },
