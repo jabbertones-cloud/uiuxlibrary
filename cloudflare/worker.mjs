@@ -3,6 +3,7 @@ import * as z from 'zod/v4';
 import { auditTokens } from '../src/token-gate.mjs';
 import { captureGate } from './capture-policy.mjs';
 import { captureOwnedSite } from './owned-capture.mjs';
+export { CaptureQuota } from './capture-quota.mjs';
 import fleet from '../examples/smat-mcp-fleet.json' with { type: 'json' };
 import donors from '../docs/donors.json' with { type: 'json' };
 
@@ -25,9 +26,9 @@ const buildHandler = (env, owner) => createMcpHandler(() => {
       viewport: z.enum(['phone', 'desktop']).default('phone')
     })
   }, async ({ siteId, viewport }) => {
-    try { await captureGate(env); return await captureOwnedSite(env, siteId, viewport); }
+    try { const reservationId = await captureGate(env); return await captureOwnedSite(env, siteId, viewport, reservationId); }
     catch (error) {
-      const safe = ['CAPTURE_BINDING_MISSING', 'CAPTURE_RATE_LIMITED', 'SITE_NOT_AUTHORIZED', 'UNSUPPORTED_VIEWPORT'];
+      const safe = ['CAPTURE_BINDING_MISSING', 'CAPTURE_RATE_LIMITED', 'CAPTURE_QUOTA_EXCEEDED', 'CAPTURE_EVIDENCE_FAILURE', 'CAPTURE_IMAGE_SIZE', 'SITE_NOT_AUTHORIZED', 'UNSUPPORTED_VIEWPORT'];
       return { ...result({ status: 'HOLD', reason: safe.includes(error.message) ? error.message : 'CAPTURE_RUNTIME_ERROR' }), isError: true };
     }
   });

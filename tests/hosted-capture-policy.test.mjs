@@ -16,13 +16,15 @@ test('Cloudflare resource gate rejects missing bindings and rate-limit refusal',
   await assert.rejects(captureGate({}), /CAPTURE_BINDING_MISSING/);
   await assert.rejects(captureGate({ MYBROWSER: {} }), /CAPTURE_BINDING_MISSING/);
   let calls = 0;
-  const env = { MYBROWSER: {}, CAPTURE_LIMITER: { limit: async ({key}) => {
+  const env = { MYBROWSER: {}, CAPTURE_EVIDENCE: {}, CAPTURE_QUOTA: {getByName(name) {assert.equal(name,'owner-v1');return {reserve: async () => ({allowed:false})}}}, CAPTURE_LIMITER: { limit: async ({key}) => {
     assert.equal(key, 'owner-capture-v1'); calls++; return {success:false};
   }}};
   await assert.rejects(captureGate(env), /CAPTURE_RATE_LIMITED/);
   assert.equal(calls, 1);
   env.CAPTURE_LIMITER.limit = async () => ({success:true});
-  await captureGate(env);
+  await assert.rejects(captureGate(env), /CAPTURE_QUOTA_EXCEEDED/);
+  env.CAPTURE_QUOTA.getByName = () => ({reserve: async () => ({allowed:true,id:'test-reservation'})});
+  assert.equal(await captureGate(env),'test-reservation');
 });
 test('browser policy prevents cross-origin and non-GET traffic, retaining telemetry receipts', async () => {
   const counts = {blocked:0,telemetry:0,websocketBlocks:0,blockedHosts:new Set()};

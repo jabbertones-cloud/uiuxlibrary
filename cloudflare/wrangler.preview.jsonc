@@ -5,7 +5,7 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "workers_dev": false,
+  "workers_dev": true,
   "browser": {
     "binding": "MYBROWSER",
     "remote": true
@@ -28,5 +28,27 @@
       "MCP_BEARER_TOKEN",
       "MCP_OWNER_TOKEN"
     ]
-  }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CAPTURE_QUOTA",
+        "class_name": "CaptureQuota"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "capture-quota-v1",
+      "new_sqlite_classes": [
+        "CaptureQuota"
+      ]
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "CAPTURE_EVIDENCE",
+      "bucket_name": "smat-uiux-owner-capture-stage-v1"
+    }
+  ]
 }

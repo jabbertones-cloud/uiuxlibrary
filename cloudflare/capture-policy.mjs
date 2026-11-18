@@ -12,7 +12,10 @@ export function siteFor(id) {
 }
 
 export async function captureGate(env) {
-  if (!env.MYBROWSER || !env.CAPTURE_LIMITER) throw new Error('CAPTURE_BINDING_MISSING');
+  if (!env.MYBROWSER || !env.CAPTURE_LIMITER || !env.CAPTURE_QUOTA || !env.CAPTURE_EVIDENCE) throw new Error('CAPTURE_BINDING_MISSING');
   const attempt = await env.CAPTURE_LIMITER.limit({ key: 'owner-capture-v1' });
   if (!attempt.success) throw new Error('CAPTURE_RATE_LIMITED');
+  const reservation = await env.CAPTURE_QUOTA.getByName('owner-v1').reserve();
+  if (!reservation?.allowed || !reservation.id) throw new Error('CAPTURE_QUOTA_EXCEEDED');
+  return reservation.id;
 }

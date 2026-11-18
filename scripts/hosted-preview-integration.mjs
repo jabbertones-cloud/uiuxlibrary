@@ -44,6 +44,10 @@ try {
   assert.deepEqual([png.width,png.height],[390,844]);
   assert.equal(createHash('sha256').update(bytes).digest('hex'), facts.sha256);
   assert.equal(facts.siteId,'aiscent');
+  assert.equal(facts.evidence?.scope,'owner');
+  assert.equal(facts.evidence?.sha256,facts.sha256);
+  assert.equal(facts.evidence?.verifiedReadback,true);
+  assert.match(facts.evidence?.imageKey || '', /^owner\/v1\/[a-f0-9-]+\.png$/);
   assert.equal(facts.status,'CAPTURE_ONLY');
   assert.equal(facts.blockedRequests,0);
   assert.ok(facts.ariaSnapshot?.includes('navigation'));
