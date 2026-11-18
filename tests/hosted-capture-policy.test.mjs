@@ -55,6 +55,11 @@ test('WebSocket isolation is mandatory; no unguarded browser is allowed', async(
     {blocked:0,telemetry:0,websocketBlocks:0,blockedHosts:new Set()}), /WEBSOCKET_CONTROL_UNAVAILABLE/);
 });
 
+test('persisted owner capture must not be declared read-only to MCP clients', () => {
+  const worker = readFileSync(new URL('../cloudflare/worker.mjs', import.meta.url), 'utf8');
+  assert.match(worker, /registerTool\('uiux_capture_owned_site',[\s\S]*?annotations: \{ readOnlyHint: false,/);
+});
+
 test('hosted config declares distinct required public and owner secrets',()=>{
   const config = JSON.parse(readFileSync(new URL('../cloudflare/wrangler.jsonc', import.meta.url), 'utf8'));
   assert.deepEqual(config.secrets.required, ['MCP_BEARER_TOKEN', 'MCP_OWNER_TOKEN']);
