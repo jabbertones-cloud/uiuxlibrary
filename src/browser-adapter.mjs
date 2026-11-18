@@ -48,6 +48,12 @@ export function isNonUiTelemetryRequest(method, rawUrl, origins = new Set()) {
     (method === 'POST' && origins.has(url.origin) && url.pathname === '/cdn-cgi/rum');
 }
 
+export function isNonUiTelemetryCspConsoleError(message, failedCspRequests = new Set()) {
+  const match = /^Loading the script '(https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js(?:\/[^'\s]*)?)' violates the following Content Security Policy directive:/.exec(message);
+  return Boolean(match && failedCspRequests.has(match[1]) &&
+    isNonUiTelemetryRequest('GET', match[1]));
+}
+
 export function pageAuditStatus({ httpOk, blockedRequests, consoleErrors, overflow, violations }) {
   const reasons = [];
   if (!httpOk) reasons.push('HTTP_RESPONSE_FAILED');
@@ -111,11 +117,16 @@ export async function auditPage(rawUrl, opts = {}) {
         else blockedRequests++;
       });
       const page = await context.newPage();
-      const consoleErrors = [];
-      page.on('pageerror', () => consoleErrors.push('uncaught_page_error'));
+      const consoleMessages = [];
+      const telemetryCspFailures = new Set();
+      page.on('pageerror', () => consoleMessages.push('uncaught_page_error'));
+      page.on('requestfailed', request => {
+        if (isNonUiTelemetryRequest(request.method(), request.url(), origins) &&
+            request.failure()?.errorText === 'csp') telemetryCspFailures.add(request.url());
+      });
       page.on('console', msg => {
         if (msg.type() === 'error' && !msg.text().includes('net::ERR_BLOCKED_BY_CLIENT'))
-          consoleErrors.push('console_error');
+          consoleMessages.push(msg.text());
       });
       const response = await page.goto(url.toString(), { waitUntil: 'domcontentloaded', timeout: 20000 });
       const redirectChain = [];
@@ -137,8 +148,11 @@ export async function auditPage(rawUrl, opts = {}) {
       await page.screenshot({ path: screenshot, animations: 'disabled' });
       const sha256 = createHash('sha256').update(await readFile(screenshot)).digest('hex');
       const screenshotEvidence = { path: relative(process.cwd(), screenshot), sha256 };
+      const suppressedTelemetryCspErrors = consoleMessages.filter(message =>
+        isNonUiTelemetryCspConsoleError(message, telemetryCspFailures)).length;
+      const consoleErrors = consoleMessages.length - suppressedTelemetryCspErrors;
       const judgment = pageAuditStatus({
-        httpOk: response?.ok(), blockedRequests, consoleErrors: consoleErrors.length,
+        httpOk: response?.ok(), blockedRequests, consoleErrors,
         overflow, violations: violations.length
       });
       results.push({
@@ -146,7 +160,7 @@ export async function auditPage(rawUrl, opts = {}) {
         automatedStatus: judgment.status, statusReasons: judgment.reasons,
         httpStatus: response?.status() ?? null,
         finalUrl: page.url(), redirectChain, httpScope: 'EXACT_ROUTE_ONLY',
-        overflow, blockedRequests, suppressedTelemetryRequests, consoleErrors: consoleErrors.length,
+        overflow, blockedRequests, suppressedTelemetryRequests, suppressedTelemetryCspErrors, consoleErrors,
         ...layout,
         accessibilityViolations: violations,
         screenshot: screenshotEvidence,
