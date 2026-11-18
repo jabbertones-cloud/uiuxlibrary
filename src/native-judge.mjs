@@ -37,6 +37,7 @@ export function judgeNativeCapture(raw, plan, workspace, review) {
     accessibilityAudit: summarizeNativeAccessibility(audits, expected.length,
       plan?.modes?.audit_accessibility === true),
     notVerified: ['exact_testflight_binary', 'capture_provider_origin_independently_authenticated', 'visual_design_without_human_review',
+      'font_glyph_rendering_across_device_locales',
       'accessibility_beyond_selected_anchor', 'user_task_success', 'production_readiness',
       ...(platform === 'mac' ? ['macos_accessibility_audit_not_run'] : [])] };
 }
