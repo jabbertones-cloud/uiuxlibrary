@@ -1,0 +1,415 @@
+{
+  "schema_version": 2,
+  "research_evidence": {
+    "github_research": {
+      "mode": "cli",
+      "artifact_path": ".lego/research/github_research.json",
+      "sha256": "3ee29ad62679f6e960a901821fc287986808d9f7a3439065e71fe970452f8b8f",
+      "query": "Cloudflare owner-only capture R2 and SQLite Durable Object strict quota source pinned pattern search",
+      "taskmap_ref": ".lego/research/ghresearch-taskmap.json",
+      "pattern_card_refs": [
+        "https://github.com/jabbertones-cloud/githubresearchmcp/blob/3122194919668346f7e7da0c2731524e3c4880dc/data/pattern-cards/cloudflare-browser-capture-durable-r2-strict-quota.md"
+      ]
+    },
+    "smat_research": {
+      "mode": "searched_no_match",
+      "artifact_path": ".lego/research/smat_research.json",
+      "sha256": "071bf37669da4f898a7b9f946de88f31d89c0875b77bfe27ea968417e09510a9",
+      "query": "Interface Lab owner capture R2 evidence strict quota history and negative prior outcomes",
+      "finding": "Matched issue #210 with reported and independently measured parts; no published study markdown identified, no reusable implementation port.",
+      "no_match_reason": "Repository search yielded relevant operational issue #210, but no graded pinned markdown study for this specific DO/R2 feature."
+    },
+    "expert_mcp": {
+      "mode": "repo_corpus",
+      "artifact_path": ".lego/research/expert_mcp.json",
+      "sha256": "26a9a096f712fc6f32fd9726cc836e8a34a7b8de384b524b44cf396de10aa265",
+      "domain": "Agent Engineering MCP tool authorization and task verification",
+      "finding": "Agent Engineering corpus supports truthful non-read-only tool hints and outcome based evaluation; does not address R2 transaction semantics.",
+      "source_refs": [
+        "https://github.com/jabbertones-cloud/smat-expert-mcps/blob/624c84dcac86bc9e0e79207bf86626d76fcb0d2c/corpus/agent-engineering/CURRICULUM.md"
+      ]
+    },
+    "fabric": {
+      "mode": "research_job",
+      "artifact_path": ".lego/research/fabric.json",
+      "sha256": "512ecaecf5b983a40752c20498410689e2d8b66c622ef0bee9e7971f68224f56",
+      "query": "Interface Lab exact source CaptureQuota transactionSync and first-party Cloudflare R2 evidence",
+      "job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "project": "uiuxlibrary"
+    }
+  },
+  "donors": [
+    {
+      "id": "cloudflare-do-docs",
+      "repository": "cloudflare/cloudflare-docs",
+      "commit": "74499239dac83affbd031acef145a4bf225c8da3",
+      "url": "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/durable-objects/api/sqlite-storage-api.mdx",
+      "license": "CC-BY-4.0",
+      "rationale": "Official platform documentation for SQLite Durable Object transactionSync and parameterized sql.exec; use native Worker API, not copied code.",
+      "fabric_project": "uiuxlibrary",
+      "fabric_job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "fabric_claim": "Fabric returned topical clean donor references; domain behavior verified independently in source and workerd tests.",
+      "fabric_status": "reported"
+    },
+    {
+      "id": "cloudflare-r2-docs",
+      "repository": "cloudflare/cloudflare-docs",
+      "commit": "74499239dac83affbd031acef145a4bf225c8da3",
+      "url": "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/r2/api/workers/workers-api-reference.mdx",
+      "license": "CC-BY-4.0",
+      "rationale": "Official R2 in-Worker API for put/get/head, SHA256 supplied bytes and conditional immutable writes; no library reimplementation.",
+      "fabric_project": "uiuxlibrary",
+      "fabric_job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "fabric_claim": "Fabric returned topical clean donor references; domain behavior verified independently in source and workerd tests.",
+      "fabric_status": "reported"
+    },
+    {
+      "id": "cloudflare-workerd",
+      "repository": "cloudflare/workerd",
+      "commit": "8e223fea491557bb4c263a78a24e61a555f2049b",
+      "url": "https://github.com/cloudflare/workerd/blob/8e223fea491557bb4c263a78a24e61a555f2049b/README.md",
+      "license": "Apache-2.0",
+      "rationale": "Cloudflare production-equivalent workerd runtime and tested Miniflare/Wrangler compatibility; execution, not source code copied.",
+      "fabric_project": "uiuxlibrary",
+      "fabric_job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "fabric_claim": "Fabric returned topical clean donor references; domain behavior verified independently in source and workerd tests.",
+      "fabric_status": "reported"
+    },
+    {
+      "id": "playwright-browsercontext",
+      "repository": "microsoft/playwright",
+      "commit": "8124fc39233c4c349b9dbebd4abc4103738eae81",
+      "url": "https://github.com/microsoft/playwright/blob/8124fc39233c4c349b9dbebd4abc4103738eae81/packages/playwright-core/src/client/browserContext.ts",
+      "license": "Apache-2.0",
+      "rationale": "Official maintained BrowserContext request and navigation APIs, used directly for screenshots and observed redirect chains.",
+      "fabric_project": "uiuxlibrary",
+      "fabric_job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "fabric_claim": "Fabric returned topical clean donor references; domain behavior verified independently in source and workerd tests.",
+      "fabric_status": "reported"
+    },
+    {
+      "id": "mcp-tool-server",
+      "repository": "modelcontextprotocol/typescript-sdk",
+      "commit": "919bb8ea88b6e10e72c2f8b6218fad4cfdc40b2c",
+      "url": "https://github.com/modelcontextprotocol/typescript-sdk/blob/919bb8ea88b6e10e72c2f8b6218fad4cfdc40b2c/packages/server/src/server/mcp.ts",
+      "license": "Apache-2.0 OR MIT",
+      "rationale": "Official maintained MCP Server tool registration, annotations, and transport compatibility; existing runtime package reused.",
+      "fabric_project": "uiuxlibrary",
+      "fabric_job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "fabric_claim": "Fabric returned topical clean donor references; domain behavior verified independently in source and workerd tests.",
+      "fabric_status": "reported"
+    },
+    {
+      "id": "node-native-url",
+      "repository": "nodejs/node",
+      "commit": "1fb0cd69784931c7433c2428ef33810e98155572",
+      "url": "https://github.com/nodejs/node/blob/1fb0cd69784931c7433c2428ef33810e98155572/lib/internal/url.js",
+      "license": "MIT",
+      "rationale": "Native URL and Date validation plus crypto from Node.js, reused through built-in standard API rather than custom parser/crypto.",
+      "fabric_project": "uiuxlibrary",
+      "fabric_job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+      "fabric_claim": "Fabric returned topical clean donor references; domain behavior verified independently in source and workerd tests.",
+      "fabric_status": "reported"
+    }
+  ],
+  "components": [
+    {
+      "path": "cloudflare/capture-evidence.mjs",
+      "mode": "assembly",
+      "donor_ids": [
+        "cloudflare-r2-docs",
+        "cloudflare-workerd"
+      ],
+      "purpose": "Use native R2 writes, conditional immutability and Cloudflare WebCrypto digest, not a custom blob store.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ],
+        [
+          "npm",
+          "run",
+          "bundle:cloudflare"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-owner-gate.test.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "cloudflare/capture-policy.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "cloudflare-do-docs",
+        "cloudflare-r2-docs"
+      ],
+      "purpose": "Connect owner authorization to durable quota and storage checks before Browser Run.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ],
+        [
+          "npm",
+          "run",
+          "bundle:cloudflare"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-owner-gate.test.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "cloudflare/capture-quota.mjs",
+      "mode": "assembly",
+      "donor_ids": [
+        "cloudflare-do-docs",
+        "cloudflare-workerd"
+      ],
+      "purpose": "Use native SQLite DurableObjectStorage.transactionSync and sql.exec for serialized quota reservations.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ],
+        [
+          "npm",
+          "run",
+          "bundle:cloudflare"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-owner-gate.test.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "cloudflare/owned-capture.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "playwright-browsercontext",
+        "cloudflare-r2-docs"
+      ],
+      "purpose": "Connect existing hosted Playwright screenshot and accessibility evidence to the R2 receipt storage API.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ],
+        [
+          "npm",
+          "run",
+          "bundle:cloudflare"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-owner-gate.test.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "cloudflare/worker.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "mcp-tool-server",
+        "cloudflare-do-docs"
+      ],
+      "purpose": "Expose one owner-only capture tool with honest non-read-only hint; retain public and owner MCP scope.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ],
+        [
+          "npm",
+          "run",
+          "bundle:cloudflare"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-owner-gate.test.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "scripts/hosted-preview-integration.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "mcp-tool-server",
+        "playwright-browsercontext"
+      ],
+      "purpose": "Verify official MCP client PNG and private R2 receipt references in existing preview acceptance.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ],
+        [
+          "npm",
+          "run",
+          "bundle:cloudflare"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-owner-gate.test.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "src/browser-adapter.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "playwright-browsercontext",
+        "node-native-url"
+      ],
+      "purpose": "Preserve redirect chain and distinguish blocked telemetry-only CSP errors from real application console failures.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-fleet-guards.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "src/fleet-audit.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "playwright-browsercontext",
+        "node-native-url"
+      ],
+      "purpose": "Keep park/API/redirect operational status separate from visual audits and customer task judgments.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-fleet-guards.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "src/operational-truth.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "node-native-url"
+      ],
+      "purpose": "Use native URL, Date and Set guards for provenance of exact observed fleet routes and nonvisual states.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-fleet-guards.mjs"
+        ]
+      ],
+      "apple_refs": []
+    },
+    {
+      "path": "scripts/fleet-audit.mjs",
+      "mode": "glue",
+      "donor_ids": [
+        "node-native-url"
+      ],
+      "purpose": "Surface operational truth and exact route scope in the existing fleet report CLI output.",
+      "tests": [
+        [
+          "npm",
+          "test"
+        ],
+        [
+          "npm",
+          "run",
+          "check"
+        ]
+      ],
+      "benchmarks": [
+        [
+          "node",
+          "tests/benchmark-fleet-guards.mjs"
+        ]
+      ],
+      "apple_refs": []
+    }
+  ]
+}

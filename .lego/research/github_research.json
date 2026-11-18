@@ -1,0 +1,27 @@
+{
+  "lane": "github_research",
+  "mode": "cli",
+  "query": "Cloudflare owner-only capture R2 and SQLite Durable Object strict quota source pinned pattern search",
+  "taskmap_ref": ".lego/research/ghresearch-taskmap.json",
+  "pattern_card_refs": [
+    "https://github.com/jabbertones-cloud/githubresearchmcp/blob/3122194919668346f7e7da0c2731524e3c4880dc/data/pattern-cards/cloudflare-browser-capture-durable-r2-strict-quota.md"
+  ],
+  "evidence": "GitHub Research CLI TaskMap, actually generated for uiuxlibrary, names cloudflare-browser-capture-durable-r2-strict-quota, failure history and tests. Pattern Card merged PR #51 at SHA 3122194919668346f7e7da0c2731524e3c4880dc. Source pinned Cloudflare native docs: DurableObjectStorage.transactionSync/sql.exec; R2Bucket.put/get/head conditional checksum and lifecycle. No donor implementation code copied from Cloudflare Docs.",
+  "source_refs": [
+    "https://github.com/jabbertones-cloud/githubresearchmcp/blob/3122194919668346f7e7da0c2731524e3c4880dc/data/pattern-cards/cloudflare-browser-capture-durable-r2-strict-quota.md",
+    "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/durable-objects/api/sqlite-storage-api.mdx",
+    "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/r2/api/workers/workers-api-reference.mdx",
+    "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/workers/runtime-apis/bindings/rate-limit.mdx",
+    "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/r2/buckets/object-lifecycles.mdx"
+  ],
+  "assessment": {
+    "relevant": true,
+    "sufficient": true,
+    "gaps": [],
+    "limitations": [
+      "Pattern Card score=0 reflects library ranking, not donor suitability or quality.",
+      "Research matches official APIs; do not infer target equivalence without local workerd and hosted R2 tests.",
+      "Actual CLI TaskMap is separately copied and committed; this is not a generic GitHub search."
+    ]
+  }
+}

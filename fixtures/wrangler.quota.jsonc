@@ -1,0 +1,10 @@
+{
+  "name": "uiux-quota-local-test",
+  "main": "./quota-worker.mjs",
+  "compatibility_date": "2026-11-05",
+  "workers_dev": false,
+  "durable_objects": {
+    "bindings": [{"name":"CAPTURE_QUOTA","class_name":"CaptureQuota"}]
+  },
+  "migrations": [{"tag":"q1","new_sqlite_classes":["CaptureQuota"]}]
+}

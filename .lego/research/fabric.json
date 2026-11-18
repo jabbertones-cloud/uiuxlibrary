@@ -1,0 +1,30 @@
+{
+  "lane": "fabric",
+  "mode": "research_job",
+  "query": "Interface Lab exact source CaptureQuota transactionSync and first-party Cloudflare R2 evidence",
+  "job_id": "c50ac825-e10e-4214-8d10-245554984a1e",
+  "project": "uiuxlibrary",
+  "evidence": "Live production Research Fabric job c50ac825-e10e-4214-8d10-245554984a1e returned status succeeded, resolved pinned Interface Lab CaptureQuota and official Cloudflare Durable Objects SQLite API, donor verification clean 7/7 repositories and 2/2 URLs, sufficiency true for topical relevance. TargetCandidates=0 and siblingCandidates=4: Fabric did not source-verify target equivalence or run workload benchmarks. Independent workerd local 100 concurrent and hosted R2 provider proofs are in source test logs and owner release document.",
+  "source_refs": [
+    "https://github.com/jabbertones-cloud/uiuxlibrary/blob/fcc0016ff614d3b600d07f52b0577ad613603cbc/cloudflare/capture-quota.mjs",
+    "https://github.com/cloudflare/cloudflare-docs/blob/74499239dac83affbd031acef145a4bf225c8da3/src/content/docs/durable-objects/api/sqlite-storage-api.mdx"
+  ],
+  "result": {
+    "status": "succeeded",
+    "sufficiency": {
+      "sufficient": true,
+      "relevantCandidates": 4,
+      "targetCandidates": 0
+    }
+  },
+  "assessment": {
+    "relevant": true,
+    "sufficient": true,
+    "gaps": [],
+    "limitations": [
+      "Sufficient means topically relevant evidence, not complete source-level donor equivalence.",
+      "Target-specific donor candidate count zero; human exact-code review and tests are mandatory.",
+      "Provider production version remains old until exact main deployment."
+    ]
+  }
+}

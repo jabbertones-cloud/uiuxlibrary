@@ -3,6 +3,7 @@ import * as z from 'zod/v4';
 import { auditTokens } from '../src/token-gate.mjs';
 import { captureGate } from './capture-policy.mjs';
 import { captureOwnedSite } from './owned-capture.mjs';
+export { CaptureQuota } from './capture-quota.mjs';
 import fleet from '../examples/smat-mcp-fleet.json' with { type: 'json' };
 import donors from '../docs/donors.json' with { type: 'json' };
 
@@ -18,16 +19,16 @@ const buildHandler = (env, owner) => createMcpHandler(() => {
     inputSchema: z.object({})
   }, async () => result(donors));
   if (owner) server.registerTool('uiux_capture_owned_site', {
-    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
-    description: 'Capture one real public SMAT-owned site in Cloudflare Browser Run. Returns PNG and SHA-256 receipt, page title, heading, overflow and blocked resources. Not a WCAG, customer-flow or human visual verdict. Restricted to source-controlled SMAT sites; no arbitrary URLs.',
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    description: 'Capture one real public SMAT-owned site in Cloudflare Browser Run. Consumes an owner capture reservation and stores a private seven-day PNG+JSON R2 receipt. Returns PNG, SHA-256 receipt, page title, heading, overflow and blocked resources. Not a WCAG, customer-flow or human visual verdict. Restricted to source-controlled SMAT sites; no arbitrary URLs.',
     inputSchema: z.object({
       siteId: z.enum(fleet.sites.map(site => site.id)),
       viewport: z.enum(['phone', 'desktop']).default('phone')
     })
   }, async ({ siteId, viewport }) => {
-    try { await captureGate(env); return await captureOwnedSite(env, siteId, viewport); }
+    try { const reservationId = await captureGate(env); return await captureOwnedSite(env, siteId, viewport, reservationId); }
     catch (error) {
-      const safe = ['CAPTURE_BINDING_MISSING', 'CAPTURE_RATE_LIMITED', 'SITE_NOT_AUTHORIZED', 'UNSUPPORTED_VIEWPORT'];
+      const safe = ['CAPTURE_BINDING_MISSING', 'CAPTURE_RATE_LIMITED', 'CAPTURE_QUOTA_EXCEEDED', 'CAPTURE_EVIDENCE_FAILURE', 'CAPTURE_IMAGE_SIZE', 'SITE_NOT_AUTHORIZED', 'UNSUPPORTED_VIEWPORT'];
       return { ...result({ status: 'HOLD', reason: safe.includes(error.message) ? error.message : 'CAPTURE_RUNTIME_ERROR' }), isError: true };
     }
   });

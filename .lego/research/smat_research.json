@@ -1,0 +1,21 @@
+{
+  "lane": "smat_research",
+  "mode": "searched_no_match",
+  "query": "Interface Lab owner capture R2 evidence strict quota history and negative prior outcomes",
+  "evidence": "SMAT Research issue #210 captures measured owner-only staging results, previous approximate per-colo CAPTURE_LIMITER risk, 4-of-100 SQLite local test, independent provider R2 SHA readback, negative outcomes and commercial HOLDS. No reusable study markdown under smat-research/studies was located by repository scoped search; issue is evidence, not a reviewed donor study.",
+  "finding": "Matched issue #210 with reported and independently measured parts; no published study markdown identified, no reusable implementation port.",
+  "no_match_reason": "Repository search yielded relevant operational issue #210, but no graded pinned markdown study for this specific DO/R2 feature.",
+  "source_refs": [
+    "https://github.com/jabbertones-cloud/smat-research/issues/210",
+    "https://github.com/jabbertones-cloud/githubresearchmcp/blob/3122194919668346f7e7da0c2731524e3c4880dc/data/pattern-cards/cloudflare-browser-capture-durable-r2-strict-quota.md"
+  ],
+  "assessment": {
+    "relevant": true,
+    "sufficient": true,
+    "gaps": [],
+    "limitations": [
+      "Issue state OPEN and reported measurements do not certify commercially ready multi-tenant access.",
+      "No exact prior study markdown, so searched_no_match rather than fictitious pinned study."
+    ]
+  }
+}

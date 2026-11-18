@@ -1,8 +1,9 @@
 import { launch } from '@cloudflare/playwright';
 import { CAPTURE_SIZES, siteFor } from './capture-policy.mjs';
 import { installCaptureRoutes } from './capture-route.mjs';
+import { storeCaptureEvidence } from './capture-evidence.mjs';
 
-export async function captureOwnedSite(env, siteId, size) {
+export async function captureOwnedSite(env, siteId, size, reservationId) {
   const site = siteFor(siteId), viewport = CAPTURE_SIZES[size];
   if (!viewport) throw new Error('UNSUPPORTED_VIEWPORT');
   const counts = { blocked: 0, telemetry: 0, websocketBlocks: 0, blockedHosts: new Set() };
@@ -34,6 +35,7 @@ export async function captureOwnedSite(env, siteId, size) {
       status: !response?.ok() || facts.documentWidth > viewport.width ? 'FAIL'
         : counts.blocked || counts.websocketBlocks || !ariaSnapshot ? 'HOLD' : 'CAPTURE_ONLY',
       notVerified: ['axe_rules', 'human_visual_review', 'customer_task', 'other_viewports'] };
+    result.evidence = await storeCaptureEvidence(env, png, result, reservationId);
     return { content: [{ type: 'text', text: JSON.stringify(result) },
       { type: 'image', data: Buffer.from(png).toString('base64'), mimeType: 'image/png' }] };
   } finally { await browser?.close().catch(() => {}); }

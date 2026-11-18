@@ -1,0 +1,19 @@
+{
+  "lane": "expert_mcp",
+  "mode": "repo_corpus",
+  "domain": "Agent Engineering MCP tool authorization and task verification",
+  "evidence": "SMAT Expert MCP live reliability module not invoked: only pinned agent-engineering curriculum repository corpus was inspected. Corpus identifies MCP consent/control, explicit approvals for irreversible tool actions, outcome-based evaluation and distinguishing source evidence from actual accepted tasks. Owner capture creates durable objects and consumes quota, so readOnlyHint=false, idempotentHint=false; success requires separate provider evidence. Official Cloudflare docs independently cover provider-specific methods.",
+  "finding": "Agent Engineering corpus supports truthful non-read-only tool hints and outcome based evaluation; does not address R2 transaction semantics.",
+  "source_refs": [
+    "https://github.com/jabbertones-cloud/smat-expert-mcps/blob/624c84dcac86bc9e0e79207bf86626d76fcb0d2c/corpus/agent-engineering/CURRICULUM.md"
+  ],
+  "assessment": {
+    "relevant": true,
+    "sufficient": true,
+    "gaps": [],
+    "limitations": [
+      "Repo corpus only, not live SMAT Expert MCP invocation.",
+      "No claim of specialist benchmark or equivalent Cloudflare source implementation; provider research is authoritative."
+    ]
+  }
+}
